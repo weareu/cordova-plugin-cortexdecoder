@@ -12,13 +12,8 @@ function scan(success, error) {
     }
 }
 
-function encode(type, data, success, errorCallback) {
-    success();
-}
-
 module.exports = {
     scan: scan,
-    encode: encode
 };
 
 require("cordova/exec/proxy").add("CortexDecoder",module.exports);

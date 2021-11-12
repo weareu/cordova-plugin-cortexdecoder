@@ -16,37 +16,37 @@ var exec = cordova.require('cordova/exec');
  * @returns {CortexDecoder}
  */
 function CortexDecoder() {
-    var initInProgress = false;
+    var scanInProgress = false;
 }
 
-CortexDecoder.prototype.init = function(options, successCallback, errorCallback) {
+CortexDecoder.prototype.scan = function(options, successCallback, errorCallback) {
     errorCallback = errorCallback || function () {};
 
     if (typeof errorCallback !== 'function') {
-        console.error('CortexDecoder.init failure: failure parameter not a function');
+        console.error('CortexDecoder.scan failure: failure parameter not a function');
         return;
     }
     if (typeof successCallback !== 'function') {
-        console.error('CortexDecoder.init failure: success callback parameter must be a function');
+        console.error('CortexDecoder.scan failure: success callback parameter must be a function');
         return;
     }
-    if (this.initInProgress) {
-        errorCallback('CortexDecoder.init is already in progress');
+    if (this.scanInProgress) {
+        errorCallback('CortexDecoder.scan is already in progress');
         return;
     }
-    this.initInProgress = true;
+    this.scanInProgress = true;
 
     exec(
         function(result) {
-            this.initInProgress = false;
+            this.scanInProgress = false;
             successCallback(result);
         },
         function(error) {
-            this.initInProgress = false;
+            this.scanInProgress = false;
             errorCallback(error);
         },
         'CortexDecoder',
-        'init',
+        'scan',
         options,
     );
 };
