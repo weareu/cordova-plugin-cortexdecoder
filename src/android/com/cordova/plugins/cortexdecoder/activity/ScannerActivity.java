@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.codecorp.camera.Focus;
 import com.codecorp.decoder.CortexDecoderLibrary;
@@ -30,8 +32,12 @@ import static com.codecorp.internal.Debug.debug;
 import static com.codecorp.internal.Debug.verbose;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import static android.os.Build.VERSION.SDK_INT;
+
+import capacitor.android.plugins.R;
 
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
@@ -50,18 +56,49 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    String packageName = getApplication().getPackageName();
-    setContentView(getApplication().getResources().getIdentifier("scanner_activity", "layout", packageName));
+
+    setContentView(R.layout.scanner_activity);
+
+    Intent intent = getIntent();
+    String customerID = intent.getStringExtra("customerID");
+    String licenseKey = intent.getStringExtra("licenseKey");
 
     Context context = getApplicationContext();
     mCortexDecoderLibrary = CortexDecoderLibrary.sharedObject(context, "");
     mCortexDecoderLibrary.setCallback(this);
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
-    mCameraFrame = findViewById(getApplication().getResources().getIdentifier("cortex_scanner_view", "layout", getApplication().getPackageName()));
+    mCameraFrame = findViewById(R.id.cortex_scanner_view);
     mCameraFrame.addView(mCameraPreview, 0);
 
     mMainHandler = new Handler(Looper.getMainLooper());
+
+    mCortexDecoderLibrary.setLicenseCallback(new LicenseCallback() {
+      @Override
+      public void onActivationResult(LicenseStatusCode statusCode) {
+        Log.d(TAG, "onActivationResult:" + statusCode);
+        switch (statusCode) {
+          case LicenseStatus_LicenseValid:
+            Toast.makeText(getApplicationContext(), "License Valid", Toast.LENGTH_SHORT).show();
+            break;
+          case LicenseStatus_LicenseExpired:
+            Date date = mCortexDecoderLibrary.getLicenseExpirationDate();
+            Toast.makeText(getApplicationContext(), "License Expired: "+formatExpireDate(date), Toast.LENGTH_LONG).show();
+            break;
+          default:
+            Toast.makeText(getApplicationContext(), "License Invalid", Toast.LENGTH_SHORT).show();
+            break;
+        }
+      }
+
+      @Override
+      public void onDeviceIDResult(int resultCode, String data) {
+
+      }
+    });
+
+    mCortexDecoderLibrary.setEDKCustomerID(customerID);
+    mCortexDecoderLibrary.activateLicense(licenseKey);
   }
 
   @Override
@@ -323,4 +360,14 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     }
   }
 
+  private String formatExpireDate(Date date){
+    if(date != null){
+      Calendar c = Calendar.getInstance();
+      c.setTime(date);
+
+      return ""+c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH);
+    }else{
+      return "";
+    }
+  }
 }

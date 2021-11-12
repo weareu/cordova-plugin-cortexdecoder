@@ -122,8 +122,6 @@ public class CortexDecoder extends CordovaPlugin {
                   Log.i("CordovaLog", e.getLocalizedMessage());
                 }
               }
-
-              // intent.putExtra("nuno", obj.optBoolean(PREFER_FRONTCAMERA, false) ? 1 : 0);
             }
           }
 
