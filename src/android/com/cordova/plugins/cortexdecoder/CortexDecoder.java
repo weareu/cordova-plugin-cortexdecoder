@@ -14,24 +14,19 @@ import org.json.JSONObject;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.pm.PackageManager;
+
+import com.cordova.plugins.cortexdecoder.activity.ScannerActivity;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PermissionHelper;
 
-import com.codecorp.camera.Focus;
-import com.codecorp.decoder.CortexDecoderLibrary;
-import com.codecorp.decoder.CortexDecoderLibraryCallback;
-import com.codecorp.internal.Debug;
-import com.codecorp.licensing.LicenseCallback;
-import com.codecorp.licensing.LicenseStatusCode;
-import com.codecorp.symbology.SymbologyType;
-import com.codecorp.util.Codewords;
 
 
 /**
@@ -40,11 +35,11 @@ import com.codecorp.util.Codewords;
  * @sa https://github.com/apache/cordova-android/blob/master/framework/src/org/apache/cordova/CordovaPlugin.java
  */
 public class CortexDecoder extends CordovaPlugin {
-    private static final String INIT = "init";
+    private static final String SCAN = "scan";
+    private static final int REQUEST_CODE = 0;
+    private static final String TAG = CortexDecoder.class.getSimpleName();
 
-    private static final String LOG_TAG = "CortexDecoder";
-
-    private String [] permissions = { Manifest.permission.CAMERA };
+    private String [] permissions = { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
     private JSONArray requestArgs;
     private CallbackContext callbackContext;
@@ -76,14 +71,7 @@ public class CortexDecoder extends CordovaPlugin {
         this.callbackContext = callbackContext;
         this.requestArgs = args;
 
-        if (action.equals(INIT)) {
-            //android permission auto add
-            if(!hasPermisssion()) {
-              requestPermissions(0);
-            } else {
-              init(args);
-            }
-        } else if (action.equals(SCAN)) {
+        if (action.equals(SCAN)) {
             //android permission auto add
             if(!hasPermisssion()) {
               requestPermissions(0);
@@ -96,93 +84,57 @@ public class CortexDecoder extends CordovaPlugin {
         return true;
     }
 
-    private void init(final JSONArray args) {
-        Context context = cordova.getActivity().getApplicationContext();
-        Intent intent = new Intent(context, ScannerActivity.class);
-        this.cordova.getActivity().startActivity(intent);
-    }
+    private void scan(final JSONArray args) {
+      final CordovaPlugin that = this;
 
-    /**
-     * Starts an intent to scan and decode a barcode.
-     */
-    public void scan(final JSONArray args) {
+      cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          Context context = cordova.getActivity().getApplicationContext();
+          Intent intent = new Intent(context, ScannerActivity.class);
 
-        final CordovaPlugin that = this;
+          if (args.length() > 0) {
+            JSONObject obj;
+            JSONArray names;
+            String key;
+            Object value;
 
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
+            for (int i = 0; i < args.length(); i++) {
+              try {
+                obj = args.getJSONObject(i);
+              } catch (JSONException e) {
+                Log.i("CordovaLog", e.getLocalizedMessage());
+                continue;
+              }
 
-                Intent intentScan = new Intent(that.cordova.getActivity().getBaseContext(), CaptureActivity.class);
-                intentScan.setAction(Intents.Scan.ACTION);
-                intentScan.addCategory(Intent.CATEGORY_DEFAULT);
+              names = obj.names();
+              for (int j = 0; j < names.length(); j++) {
+                try {
+                  key = names.getString(j);
+                  value = obj.get(key);
 
-                // add config as intent extras
-                if (args.length() > 0) {
+                  if (value instanceof Integer) {
+                    intent.putExtra(key, (Integer) value);
+                  } else if (value instanceof String) {
+                    intent.putExtra(key, (String) value);
+                  }
 
-                    JSONObject obj;
-                    JSONArray names;
-                    String key;
-                    Object value;
-
-                    for (int i = 0; i < args.length(); i++) {
-
-                        try {
-                            obj = args.getJSONObject(i);
-                        } catch (JSONException e) {
-                            Log.i("CordovaLog", e.getLocalizedMessage());
-                            continue;
-                        }
-
-                        names = obj.names();
-                        for (int j = 0; j < names.length(); j++) {
-                            try {
-                                key = names.getString(j);
-                                value = obj.get(key);
-
-                                if (value instanceof Integer) {
-                                    intentScan.putExtra(key, (Integer) value);
-                                } else if (value instanceof String) {
-                                    intentScan.putExtra(key, (String) value);
-                                }
-
-                            } catch (JSONException e) {
-                                Log.i("CordovaLog", e.getLocalizedMessage());
-                            }
-                        }
-
-                        intentScan.putExtra(Intents.Scan.CAMERA_ID, obj.optBoolean(PREFER_FRONTCAMERA, false) ? 1 : 0);
-                        intentScan.putExtra(Intents.Scan.SHOW_FLIP_CAMERA_BUTTON, obj.optBoolean(SHOW_FLIP_CAMERA_BUTTON, false));
-                        intentScan.putExtra(Intents.Scan.SHOW_TORCH_BUTTON, obj.optBoolean(SHOW_TORCH_BUTTON, false));
-                        intentScan.putExtra(Intents.Scan.TORCH_ON, obj.optBoolean(TORCH_ON, false));
-                        intentScan.putExtra(Intents.Scan.SAVE_HISTORY, obj.optBoolean(SAVE_HISTORY, false));
-                        boolean beep = obj.optBoolean(DISABLE_BEEP, false);
-                        intentScan.putExtra(Intents.Scan.BEEP_ON_SCAN, !beep);
-                        if (obj.has(RESULTDISPLAY_DURATION)) {
-                            intentScan.putExtra(Intents.Scan.RESULT_DISPLAY_DURATION_MS, "" + obj.optLong(RESULTDISPLAY_DURATION));
-                        }
-                        if (obj.has(FORMATS)) {
-                            intentScan.putExtra(Intents.Scan.FORMATS, obj.optString(FORMATS));
-                        }
-                        if (obj.has(PROMPT)) {
-                            intentScan.putExtra(Intents.Scan.PROMPT_MESSAGE, obj.optString(PROMPT));
-                        }
-                        if (obj.has(ORIENTATION)) {
-                            intentScan.putExtra(Intents.Scan.ORIENTATION_LOCK, obj.optString(ORIENTATION));
-                        }
-                    }
-
+                } catch (JSONException e) {
+                  Log.i("CordovaLog", e.getLocalizedMessage());
                 }
+              }
 
-                // avoid calling other phonegap apps
-                intentScan.setPackage(that.cordova.getActivity().getApplicationContext().getPackageName());
-
-                that.cordova.startActivityForResult(that, intentScan, REQUEST_CODE);
+              // intent.putExtra("nuno", obj.optBoolean(PREFER_FRONTCAMERA, false) ? 1 : 0);
             }
-        });
+          }
+
+          intent.setPackage(that.cordova.getActivity().getApplicationContext().getPackageName());
+          that.cordova.startActivityForResult(that, intent, REQUEST_CODE);
+        }
+      });
     }
 
     /**
-     * Called when the barcode scanner intent completes.
+     * Called when the scanner intent completes.
      *
      * @param requestCode The request code originally supplied to startActivityForResult(),
      *                       allowing you to identify who this result came from.
@@ -194,24 +146,24 @@ public class CortexDecoder extends CordovaPlugin {
         if (requestCode == REQUEST_CODE && this.callbackContext != null) {
             if (resultCode == Activity.RESULT_OK) {
                 JSONObject obj = new JSONObject();
-                try {
+                /*try {
                     obj.put(TEXT, intent.getStringExtra("SCAN_RESULT"));
                     obj.put(FORMAT, intent.getStringExtra("SCAN_RESULT_FORMAT"));
                     obj.put(CANCELLED, false);
                 } catch (JSONException e) {
-                    Log.d(LOG_TAG, "This should never happen");
-                }
+                    Log.d(TAG, "This should never happen");
+                }*/
                 //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
                 this.callbackContext.success(obj);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 JSONObject obj = new JSONObject();
-                try {
+                /*try {
                     obj.put(TEXT, "");
                     obj.put(FORMAT, "");
                     obj.put(CANCELLED, true);
                 } catch (JSONException e) {
-                    Log.d(LOG_TAG, "This should never happen");
-                }
+                    Log.d(TAG, "This should never happen");
+                }*/
                 //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
                 this.callbackContext.success(obj);
             } else {
@@ -259,7 +211,7 @@ public class CortexDecoder extends CordovaPlugin {
        PluginResult result;
        for (int r : grantResults) {
            if (r == PackageManager.PERMISSION_DENIED) {
-               Log.d(LOG_TAG, "Permission Denied!");
+               Log.d(TAG, "Permission Denied!");
                result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION);
                this.callbackContext.sendPluginResult(result);
                return;
