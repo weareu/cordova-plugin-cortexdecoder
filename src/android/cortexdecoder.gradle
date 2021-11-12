@@ -6,7 +6,7 @@ repositories{
 }
 
 dependencies {
-    compile(name:'CortexDecoderLibrary', ext:'aar')
+    implementation(name:'CortexDecoderLibrary', ext:'aar')
 }
 
 android {

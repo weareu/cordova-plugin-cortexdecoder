@@ -25,15 +25,6 @@ import org.apache.cordova.PluginResult;
 import org.apache.cordova.PermissionHelper;
 
 import com.codecorp.camera.Focus;
-import com.codecorp.cortex_scan.BuildConfig;
-import com.codecorp.cortex_scan.MyApplication;
-import com.codecorp.cortex_scan.R;
-import com.codecorp.cortex_scan.util.PermissionUtils;
-import com.codecorp.cortex_scan.util.RegionOfInterestRect;
-import com.codecorp.cortex_scan.view.BarcodeFinderView;
-import com.codecorp.cortex_scan.view.CropFrameView;
-import com.codecorp.cortex_scan.view.CrosshairsView;
-import com.codecorp.cortex_scan.view.PicklistView;
 import com.codecorp.decoder.CortexDecoderLibrary;
 import com.codecorp.decoder.CortexDecoderLibraryCallback;
 import com.codecorp.internal.Debug;
