@@ -1,0 +1,47 @@
+{
+  "name": "cordova-plugin-cortexdecoder",
+  "version": "1.0.0",
+  "description": "You can use the CortexDecoder plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.",
+  "cordova": {
+    "id": "cordova-plugin-cortexdecoder",
+    "platforms": [
+      "android",
+      "browser"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nfcf/cordova-plugin-cortexdecoder.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-browser",
+    "cordova:plugin"
+  ],
+  "engines": {
+    "cordovaDependencies": {
+      "8.0.0": {
+        "cordova-android": ">=9.0.0",
+        "cordova": ">=8.0.0"
+      }
+    }
+  },
+  "author": "Nuno Freire",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nfcf/cordova-plugin-cortexdecoder/issues"
+  },
+  "homepage": "https://github.com/nfcf/cordova-plugin-cortexdecoder#readme",
+  "scripts": {
+    "test": "jasmine-node --color spec"
+  },
+  "devDependencies": {
+    "jasmine-node": "1.14.5",
+    "pluginpub": "^0.0.9"
+  },
+  "dependencies": {
+    "nopt": "^4.0.1",
+    "shelljs": "^0.8.3"
+  }
+}

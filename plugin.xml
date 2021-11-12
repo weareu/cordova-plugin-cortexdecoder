@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:rim="http://www.blackberry.com/ns/widgets" id="phonegap-plugin-barcodescanner" version="8.1.1-dev">
+  <name>CortexDecoder</name>
+  <description>You can use the CortexDecoder plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.</description>
+  <license>MIT</license>
+  <repo>https://github.com/nfcf/cordova-plugin-cortexdecoder</repo>
+  <issue>https://github.com/nfcf/cordova-plugin-cortexdecoder/issues</issue>
+  <engines>
+    <engine name="cordova" version=">=8.0.0"/>
+    <engine name="cordova-android" version=">=9.0.0"/>
+  </engines>
+  <js-module src="www/cortexdecoder.js" name="CortexDecoder">
+    <clobbers target="cordova.plugins.cortexDecoder"/>
+  </js-module>
+  <platform name="android">
+    <source-file src="src/android/com/cordova/plugins/cortexdecoder/CortexDecoder.java" target-dir="src/com/cordova/plugins/cortexdecoder"/>
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="CortexDecoder">
+        <param name="android-package" value="com.cordova.plugins.cortexdecoder.CortexDecoder"/>
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity
+        android:name="com.cordova.plugins.cortexdecoder.ScannerActivity"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.NoTitleBar.Fullscreen"
+        android:clearTaskOnLaunch="true"
+        android:windowSoftInputMode="stateAlwaysHidden"
+        android:exported="false">
+      </activity>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.CAMERA"/>
+      <uses-permission android:name="android.permission.FLASHLIGHT"/>
+      <uses-feature android:name="android.hardware.camera" android:required="true"/>
+      <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    </config-file>
+    <framework src="src/android/cortexdecoder.gradle" custom="true" type="gradleReference"/>
+    <lib-file src="src/android/CortexDecoderLibrary.aar"/>
+  </platform>
+
+  <platform name="browser">
+    <config-file target="config.xml" parent="/*">
+      <feature name="CortexDecoder">
+        <param name="browser-package" value="CortexDecoder"/>
+      </feature>
+    </config-file>
+    <js-module src="src/browser/CortexDecoderProxy.js" name="CortexDecoderProxy">
+      <runs/>
+    </js-module>
+  </platform>
+</plugin>
