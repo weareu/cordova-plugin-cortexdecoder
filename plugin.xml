@@ -14,8 +14,9 @@
   </js-module>
   <platform name="android">
     <source-file src="src/android/com/cordova/plugins/cortexdecoder/CortexDecoder.java" target-dir="src/com/cordova/plugins/cortexdecoder"/>
-    <source-file src="src/android/com/cordova/plugins/cortexdecoder/activities/ScannerActivity.java" target-dir="src/com/cordova/plugins/cortexdecoder/activities"/>
-    <source-file src="src/android/com/cordova/plugins/cortexdecoder/activities/scanner_activity.xml" target-dir="src/com/cordova/plugins/cortexdecoder/activities"/>
+    <source-file src="src/android/com/cordova/plugins/cortexdecoder/activity/ScannerActivity.java" target-dir="src/com/cordova/plugins/cortexdecoder/activity"/>
+    <source-file src="src/android/com/cordova/plugins/cortexdecoder/activity/scanner_activity.xml" target-dir="src/com/cordova/plugins/cortexdecoder/activity"/>
+    <source-file src="src/android/com/cordova/plugins/cortexdecoder/view/BarcodeFinderView.java" target-dir="src/com/cordova/plugins/cortexdecoder/view"/>
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="CortexDecoder">
         <param name="android-package" value="com.cordova.plugins.cortexdecoder.CortexDecoder"/>
@@ -23,7 +24,7 @@
     </config-file>
     <config-file target="AndroidManifest.xml" parent="/manifest/application">
       <activity
-        android:name="com.cordova.plugins.cortexdecoder.activities.ScannerActivity"
+        android:name="com.cordova.plugins.cortexdecoder.activity.ScannerActivity"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:screenOrientation="portrait"
         android:clearTaskOnLaunch="true"
