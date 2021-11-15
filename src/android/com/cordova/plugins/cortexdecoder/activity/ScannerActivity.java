@@ -1,16 +1,16 @@
 package com.cordova.plugins.cortexdecoder.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Point;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -18,10 +18,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.codecorp.camera.Focus;
 import com.codecorp.decoder.CortexDecoderLibrary;
 import com.codecorp.decoder.CortexDecoderLibraryCallback;
-import com.codecorp.internal.Debug;
 import com.codecorp.licensing.LicenseCallback;
 import com.codecorp.licensing.LicenseStatusCode;
 import com.codecorp.symbology.SymbologyType;
@@ -34,8 +32,8 @@ import static com.codecorp.internal.Debug.verbose;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-import static android.os.Build.VERSION.SDK_INT;
 
 import capacitor.android.plugins.R;
 
@@ -46,12 +44,16 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   private RelativeLayout mCameraFrame;
   private View mCameraPreview;
   private CortexDecoderLibrary mCortexDecoderLibrary;
+  private DisplayMetrics mDisplayMetrics;
   private Handler mMainHandler;
+
+
 
   private ArrayList<BarcodeFinderView> bfArr = new ArrayList<BarcodeFinderView>();
   private boolean continuousScanMode = false;
   private int continuousScanCount = 0;
   private boolean isScanning = false;
+  private boolean enableVerificationMode = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +71,14 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
     mCameraFrame = findViewById(R.id.cortex_scanner_view);
+
+    if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
     mCameraFrame.addView(mCameraPreview, 0);
 
     mMainHandler = new Handler(Looper.getMainLooper());
+
+    mDisplayMetrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
 
     mCortexDecoderLibrary.setLicenseCallback(new LicenseCallback() {
       @Override
@@ -99,6 +106,59 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
     mCortexDecoderLibrary.setEDKCustomerID(customerID);
     mCortexDecoderLibrary.activateLicense(licenseKey);
+
+    //Tablets more than likely are going to have a screen dp >= 600
+    if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
+      // Lock phone form factor to portrait.
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+  }
+
+  @Override
+  protected void onStart() {
+    debug(TAG, "onStart()");
+    super.onStart();
+  }
+
+  @Override
+  public void onResume() {
+    debug(TAG, "onResume()");
+    super.onResume();
+
+    removeLocatorOverlays();
+
+    //enable get codewords
+    mCortexDecoderLibrary.enableCodewordsOutput(true);
+
+    startScanningAndDecoding();
+
+    CortexDecoderLibrary.CD_VerificationType verificationType = mCortexDecoderLibrary.getCurrentVerificationType();
+    if(verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_AIMDPM || verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_ISO15415){
+      enableVerificationMode = true;
+    }else if(verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_None){
+      enableVerificationMode = false;
+    }
+  }
+
+  private void startScanningAndDecoding() {
+    if (mCortexDecoderLibrary.isLicenseActivated()) {
+      if (!mCortexDecoderLibrary.isLicenseExpired()) {
+        startScanning();
+      }
+    }
+  }
+
+  private void removeLocatorOverlays() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        for (Iterator<BarcodeFinderView> iterator = bfArr.listIterator(); iterator.hasNext(); ) {
+          BarcodeFinderView b = iterator.next();
+          iterator.remove();
+          mCameraFrame.removeView(b);
+        }
+      }
+    });
   }
 
   @Override
@@ -113,8 +173,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
     if (!continuousScanMode) {
       continuousScanCount = 0;
-      mCortexDecoderLibrary.stopDecoding();
-      mCortexDecoderLibrary.stopCameraPreview();
       updateBarcodeData(data, type, true);
     } else {
       updateBarcodeData(data, type, false);
@@ -123,8 +181,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
       if (isScanning)
         mCortexDecoderLibrary.startDecoding();
-      //else
-        //startScanning();
+      else
+        startScanning();
     }
   }
 
@@ -215,24 +273,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        /*if (mPicklistMode) {
-          mPicklistView.setVisibility(View.VISIBLE);
-          mCrosshairs.setVisibility(View.INVISIBLE);
-        } else {
-          mCrosshairs.setVisibility(View.VISIBLE);
-          mPicklistView.setVisibility(View.INVISIBLE);
-        }
-
-        if (mCaptureMode) {
-          mCaptureButton.setVisibility(View.VISIBLE);
-          mGetItNowImg.setVisibility(View.GONE);
-        } else {
-          mCaptureButton.setVisibility(View.GONE);
-          mGetItNowImg.setVisibility(View.VISIBLE);
-        }
-        mTap.setVisibility(View.INVISIBLE);
-        mCropFrameView.setEnabled(true);
-        mSnapShotImageView.setVisibility(View.INVISIBLE);*/
       }
     });
 
@@ -248,22 +288,29 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       @Override
       public void run() {
         mCortexDecoderLibrary.startCameraPreview();
-        // if (!mPicklistMode && !mStopDecoding && !mEnableVerificationMode) {
-          mCortexDecoderLibrary.startDecoding();
-        // }
+        mCortexDecoderLibrary.startDecoding();
       }
     });
   }
 
-  private void updateBarcodeData(final String data, SymbologyType type, final boolean mStop) {
+  private void updateBarcodeData(final String data, SymbologyType type, final boolean stop) {
     final String symString = CortexDecoderLibrary.stringFromSymbologyType(type);
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
         Log.d(TAG, data);
 
-        if (mStop)
+
+
+        if (stop) {
           stopScanning(false);
+
+          Intent intent = new Intent();
+          intent.putExtra("barcodeData", data);
+          intent.putExtra("symbologyName", symString);
+          setResult(RESULT_OK, intent);
+          finish();
+        }
       }
     });
   }
@@ -271,17 +318,23 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   void stopScanning(boolean launchingIntent) {
     debug(TAG, "stopScanning()");
 
-    /*mCrosshairs.setVisibility(View.INVISIBLE);
-    if (!launchingIntent) {
-      mTap.setVisibility(View.VISIBLE);
-      mCropFrameView.setEnabled(false);
-      mSnapShotImageView.setVisibility(View.GONE);
-    }*/
-
     mCortexDecoderLibrary.stopDecoding();
-    // mCameraFrame.setOnClickListener(tapListener);
+    mCameraFrame.setOnClickListener(tapListener);
     mCortexDecoderLibrary.stopCameraPreview();
+
+    mCortexDecoderLibrary.closeCamera();
   }
+
+  View.OnClickListener tapListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+      debug(TAG, "onClick()");
+
+      removeLocatorOverlays();
+
+      startScanning();
+    }
+  };
 
   private void displayContinuousCount() {
     runOnUiThread(new Runnable() {
@@ -318,7 +371,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       point.y = display.getHeight();
     }
     int screenH = point.y;
-    int _y = mCameraFrame.getChildAt(1).getMeasuredHeight();
+    int _y = mCameraFrame.getChildAt(0).getMeasuredHeight();
     int mPreviewH;
 
     int diffY = screenH - _y;

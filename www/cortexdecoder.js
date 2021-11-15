@@ -34,14 +34,15 @@ CortexDecoder.prototype.scan = function(options, successCallback, errorCallback)
         errorCallback('CortexDecoder.scan is already in progress');
         return;
     }
+
     this.scanInProgress = true;
 
     exec(
-        function(result) {
+        (result) => {
             this.scanInProgress = false;
             successCallback(result);
         },
-        function(error) {
+        (error) => {
             this.scanInProgress = false;
             errorCallback(error);
         },

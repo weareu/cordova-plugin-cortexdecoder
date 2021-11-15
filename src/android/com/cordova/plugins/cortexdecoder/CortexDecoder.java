@@ -39,7 +39,7 @@ public class CortexDecoder extends CordovaPlugin {
     private static final int REQUEST_CODE = 0;
     private static final String TAG = CortexDecoder.class.getSimpleName();
 
-    private String [] permissions = { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    private String [] permissions = { Manifest.permission.CAMERA };
 
     private JSONArray requestArgs;
     private CallbackContext callbackContext;
@@ -144,24 +144,24 @@ public class CortexDecoder extends CordovaPlugin {
         if (requestCode == REQUEST_CODE && this.callbackContext != null) {
             if (resultCode == Activity.RESULT_OK) {
                 JSONObject obj = new JSONObject();
-                /*try {
-                    obj.put(TEXT, intent.getStringExtra("SCAN_RESULT"));
-                    obj.put(FORMAT, intent.getStringExtra("SCAN_RESULT_FORMAT"));
-                    obj.put(CANCELLED, false);
+                try {
+                    obj.put("barcodeData", intent.getStringExtra("barcodeData"));
+                    obj.put("symbologyName", intent.getStringExtra("symbologyName"));
+                    obj.put("cancelled", false);
                 } catch (JSONException e) {
                     Log.d(TAG, "This should never happen");
-                }*/
+                }
                 //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
                 this.callbackContext.success(obj);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 JSONObject obj = new JSONObject();
-                /*try {
-                    obj.put(TEXT, "");
-                    obj.put(FORMAT, "");
-                    obj.put(CANCELLED, true);
+                try {
+                  obj.put("barcodeData", "");
+                  obj.put("symbologyName", "");
+                  obj.put("cancelled", true);
                 } catch (JSONException e) {
-                    Log.d(TAG, "This should never happen");
-                }*/
+                  Log.d(TAG, "This should never happen");
+                }
                 //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
                 this.callbackContext.success(obj);
             } else {
