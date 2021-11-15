@@ -143,30 +143,17 @@ public class CortexDecoder extends CordovaPlugin {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_CODE && this.callbackContext != null) {
             if (resultCode == Activity.RESULT_OK) {
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("barcodeData", intent.getStringExtra("barcodeData"));
-                    obj.put("symbologyName", intent.getStringExtra("symbologyName"));
-                    obj.put("cancelled", false);
-                } catch (JSONException e) {
-                    Log.d(TAG, "This should never happen");
-                }
-                //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
-                this.callbackContext.success(obj);
+              try {
+                JSONArray jsonArray = new JSONArray(intent.getStringExtra("results"));
+                this.callbackContext.success(jsonArray);
+              } catch (JSONException e) {
+                Log.d(TAG, "This should never happen");
+              }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                JSONObject obj = new JSONObject();
-                try {
-                  obj.put("barcodeData", "");
-                  obj.put("symbologyName", "");
-                  obj.put("cancelled", true);
-                } catch (JSONException e) {
-                  Log.d(TAG, "This should never happen");
-                }
-                //this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
-                this.callbackContext.success(obj);
+              this.callbackContext.success(new JSONArray());
             } else {
-                //this.error(new PluginResult(PluginResult.Status.ERROR), this.callback);
-                this.callbackContext.error("Unexpected error");
+              //this.error(new PluginResult(PluginResult.Status.ERROR), this.callback);
+              this.callbackContext.error("Unexpected error");
             }
         }
     }

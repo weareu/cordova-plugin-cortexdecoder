@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,11 +28,19 @@ import com.cordova.plugins.cortexdecoder.view.BarcodeFinderView;
 import static com.codecorp.internal.Debug.debug;
 import static com.codecorp.internal.Debug.verbose;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import capacitor.android.plugins.R;
 
@@ -45,25 +52,23 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   private View mCameraPreview;
   private CortexDecoderLibrary mCortexDecoderLibrary;
   private DisplayMetrics mDisplayMetrics;
+  private boolean mInputBuffering;
+  private int mInputBufferingItemCount;
+  private long mLastFrameTick;
+  private long mLastResultTick;
   private Handler mMainHandler;
-
-
+  private HashMap<String, JSONObject> mResultsMap;
+  private Timer mTimer;
+  private TimerTask mTimerTask;
 
   private ArrayList<BarcodeFinderView> bfArr = new ArrayList<BarcodeFinderView>();
-  private boolean continuousScanMode = false;
-  private int continuousScanCount = 0;
-  private boolean isScanning = false;
-  private boolean enableVerificationMode = false;
+  private int decodeForXMs = 250;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.scanner_activity);
-
-    Intent intent = getIntent();
-    String customerID = intent.getStringExtra("customerID");
-    String licenseKey = intent.getStringExtra("licenseKey");
 
     Context context = getApplicationContext();
     mCortexDecoderLibrary = CortexDecoderLibrary.sharedObject(context, "");
@@ -104,8 +109,22 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       }
     });
 
+    Intent intent = getIntent();
+    mInputBuffering = intent.getBooleanExtra("inputBuffering", false);
+    mInputBufferingItemCount = intent.getIntExtra("inputBufferingItemCount", 0);
+
+    String customerID = intent.getStringExtra("customerID");
+    String licenseKey = intent.getStringExtra("licenseKey");
+    int decoderTimeLimit = intent.getIntExtra("decoderTimeLimit", 0);
+    int numberOfBarcodesToDecode = intent.getIntExtra("numberOfBarcodesToDecode", 1);
+    boolean exactlyNBarcodes = intent.getBooleanExtra("exactlyNBarcodes", false);
+
     mCortexDecoderLibrary.setEDKCustomerID(customerID);
     mCortexDecoderLibrary.activateLicense(licenseKey);
+
+    mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
+    mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
+    mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
 
     //Tablets more than likely are going to have a screen dp >= 600
     if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
@@ -131,13 +150,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.enableCodewordsOutput(true);
 
     startScanningAndDecoding();
-
-    CortexDecoderLibrary.CD_VerificationType verificationType = mCortexDecoderLibrary.getCurrentVerificationType();
-    if(verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_AIMDPM || verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_ISO15415){
-      enableVerificationMode = true;
-    }else if(verificationType == CortexDecoderLibrary.CD_VerificationType.CD_Verification_None){
-      enableVerificationMode = false;
-    }
   }
 
   private void startScanningAndDecoding() {
@@ -163,67 +175,73 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
   @Override
   public void receivedDecodedData(final String data, final SymbologyType type) {
-    debug(TAG, "receivedDecodedData()");
-    final String symString = CortexDecoderLibrary.stringFromSymbologyType(type);
-
-    List<int[]> cornersList = mCortexDecoderLibrary.getBarcodeCornersArray();
-    if(cornersList != null){
-      Log.e(TAG, "getBarcodeCornersArray length:"+ cornersList.size());
-    }
-
-    if (!continuousScanMode) {
-      continuousScanCount = 0;
-      updateBarcodeData(data, type, true);
-    } else {
-      updateBarcodeData(data, type, false);
-      continuousScanCount++;
-      displayContinuousCount();
-
-      if (isScanning)
-        mCortexDecoderLibrary.startDecoding();
-      else
-        startScanning();
-    }
+    receivedMultipleDecodedData(new String[]{ data }, new SymbologyType[]{ type });
   }
 
   @Override
-  public void receivedMultipleDecodedData(String[] data, SymbologyType[] types) {
+  public void receivedMultipleDecodedData(String[] datas, SymbologyType[] types) {
     List<int[]> cornersList = mCortexDecoderLibrary.getBarcodeCornersArray();
     if(cornersList != null) {
       Log.e(TAG, "getBarcodeCornersArray length:" + cornersList.size());
     }
 
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (!continuousScanMode) {
-          continuousScanCount = 0;
-          mCortexDecoderLibrary.stopDecoding();
-          mCortexDecoderLibrary.stopCameraPreview();
-          stopScanning(false);
-        } else {
-          stopScanning(true);
-          continuousScanCount++;
-          displayContinuousCount();
+    long now = (new Date()).getTime();
+    if (now - mLastFrameTick >= 20) {
+      removeLocatorOverlays();
+    }
+    mLastFrameTick = now;
 
-          if (isScanning) {
-            mCortexDecoderLibrary.startDecoding();
-          } else {
-            startScanning();
-          }
-        }
+    Set<String> keys = mResultsMap.keySet();
+    if (mInputBuffering && mInputBufferingItemCount > 0) {
+      if (keys.size() == mInputBufferingItemCount) {
+        stopDecodingAndReturn(mResultsMap);
       }
-    });
+    } else if (mLastResultTick > 0 && now - mLastResultTick >= this.decodeForXMs) {
+      if (mInputBuffering) stopDecodingAndReturn(mResultsMap);
+      else if (keys.size() == 1) stopDecodingAndReturn(mResultsMap);
+      else {
+        mCortexDecoderLibrary.stopDecoding();
+        mCortexDecoderLibrary.stopCameraPreview();
+      }
+    }
+
+    for (int i = 0; i < datas.length; i++) {
+      if (!mResultsMap.containsKey(datas[i])) mLastResultTick = now;
+
+      JSONObject result = new JSONObject();
+      try {
+        result.put("barcodeData", datas[i]);
+        result.put("symbologyName", CortexDecoderLibrary.stringFromSymbologyType(types[i]));
+        result.put("corners", cornersList.get(i));
+      } catch (JSONException e) {
+        Log.d(TAG, "This should never happen");
+      }
+
+      mResultsMap.put(datas[i], result);
+    }
+
+  }
+
+  public void stopDecodingAndReturn(final HashMap<String, JSONObject> barcodes) {
+    JSONArray jsonArray = new JSONArray();
+    for (String key: barcodes.keySet()) {
+      jsonArray.put(barcodes.get(key));
+    }
+
+    stopScanning();
+
+    Intent intent = new Intent();
+    intent.putExtra("results", jsonArray.toString());
+    setResult(RESULT_OK, intent);
+    finish();
   }
 
   @Override
   public void receiveBarcodeCorners(final int[] corners) {
-    mMainHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        createTargetLocator(corners);
-      }
-    });
+    ArrayList<int[]> cornersList = new ArrayList<int[]>();
+    cornersList.add(corners);
+
+    receiveMultipleBarcodeCorners(cornersList);
   }
 
   @Override
@@ -232,7 +250,19 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       @Override
       public void run() {
         for(int[] corners : cornersList) {
-          createTargetLocator(corners);
+          String barcodeData = "";
+          for (String key: mResultsMap.keySet()) {
+            JSONObject result = mResultsMap.get(key);
+            try {
+              if (((int[])result.get("corners"))[0] == corners[0]) {
+                barcodeData = key;
+                break;
+              }
+            } catch (JSONException e) {
+              e.printStackTrace();
+            }
+          }
+          createTargetLocator(corners, barcodeData);
         }
       }
     });
@@ -270,16 +300,13 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
   void startScanning() {
     debug(TAG, "startScanning()");
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-      }
-    });
 
+    mLastFrameTick = 0;
+    mLastResultTick = 0;
+    mResultsMap = new HashMap<String, JSONObject>();
     mCameraFrame.setOnClickListener(null);
     // This can take a while if we need to open the camera, so post
     // it after the UI update.
-
     postStartCameraAndDecodeTask();
   }
 
@@ -293,29 +320,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     });
   }
 
-  private void updateBarcodeData(final String data, SymbologyType type, final boolean stop) {
-    final String symString = CortexDecoderLibrary.stringFromSymbologyType(type);
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        Log.d(TAG, data);
-
-
-
-        if (stop) {
-          stopScanning(false);
-
-          Intent intent = new Intent();
-          intent.putExtra("barcodeData", data);
-          intent.putExtra("symbologyName", symString);
-          setResult(RESULT_OK, intent);
-          finish();
-        }
-      }
-    });
-  }
-
-  void stopScanning(boolean launchingIntent) {
+  void stopScanning() {
     debug(TAG, "stopScanning()");
 
     mCortexDecoderLibrary.stopDecoding();
@@ -357,7 +362,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   }
 
   //We are doing conversions from camera preview display to the actual size of the preview on the screen. Find the correct ratios and passing it along to the BarcodeFinderViewClass.
-  private void createTargetLocator(int[] corners) {
+  private void createTargetLocator(int[] corners, String barcodeData) {
     //We will have to take these points and draw them to the screen
     int pWidth = mCameraPreview.getWidth();
     int pHeight = mCameraPreview.getHeight();
@@ -388,7 +393,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       float prh = (float) pWidth / sz.height;
       float prw = (float) pHeight / sz.width;
 
-      final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw);
+      final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw, barcodeData);
+      bf.setOnClickListener(bfvClickListener);
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
@@ -401,7 +407,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       float prw = (float) pWidth / sz.width;
       float prh = (float) pHeight / sz.height;
 
-      final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw);
+      final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw, barcodeData);
+      bf.setOnClickListener(bfvClickListener);
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
@@ -413,6 +420,21 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     }
   }
 
+  View.OnClickListener bfvClickListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+      debug(TAG, "onBFVClick()");
+
+      BarcodeFinderView bfv = (BarcodeFinderView) v;
+      JSONObject barcode = mResultsMap.get(bfv.barcodeData);
+
+      HashMap<String, JSONObject> barcodes = new HashMap<String, JSONObject>();
+      barcodes.put(bfv.barcodeData, barcode);
+
+      stopDecodingAndReturn(barcodes);
+    }
+  };
+
   private String formatExpireDate(Date date){
     if(date != null){
       Calendar c = Calendar.getInstance();
@@ -421,6 +443,36 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       return ""+c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH)+1)+"/"+c.get(Calendar.DAY_OF_MONTH);
     }else{
       return "";
+    }
+  }
+
+  private void startTimer() {
+    if (mTimer == null)
+      mTimer = new Timer();
+
+    if (mTimerTask != null) {
+      mTimerTask.cancel();
+      mTimer.purge();
+    }
+
+    mTimerTask = new TimerTask() {
+      @Override
+      public void run() {
+        removeLocatorOverlays();
+      }
+    };
+
+    mTimer.schedule(mTimerTask, 250);
+  }
+
+  private void cancelTimer() {
+    if (mTimer != null) {
+      mTimer.cancel();
+      mTimer = null;
+    }
+    if (mTimerTask != null) {
+      mTimerTask.cancel();
+      mTimerTask = null;
     }
   }
 }

@@ -10,21 +10,24 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 
+
 public class BarcodeFinderView extends View {
 
+  public String barcodeData;
   float p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y;
   float mWidth;
   int screenDiff;
   int mHeight;
   Context mContext;
 
-  public BarcodeFinderView(Context context, int[] points, int screenWidth, int screenHeight, int screenHeightDiff, float heightRatio, float widthRatio) {
+  public BarcodeFinderView(Context context, int[] points, int screenWidth, int screenHeight, int screenHeightDiff, float heightRatio, float widthRatio, String data) {
     super(context);
     mInitializePoints(points, heightRatio);
     mWidth = screenWidth;
     mHeight = screenHeight;
     screenDiff = screenHeightDiff;
     mContext = context;
+    barcodeData = data;
   }
 
   public BarcodeFinderView(Context context, AttributeSet attrs) {
@@ -135,4 +138,5 @@ public class BarcodeFinderView extends View {
     c.drawPath(p, paint);
 
   }
+
 }
