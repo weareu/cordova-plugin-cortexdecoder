@@ -42,7 +42,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import capacitor.android.plugins.R;
+import se.mobilelogic.logiccenter.mobile.R;
 
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
