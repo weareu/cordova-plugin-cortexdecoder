@@ -8,7 +8,7 @@
  */
 
 
-var exec = cordova.require('cordova/exec');
+var exec = cordova ? cordova.require('cordova/exec') : function() { console.warn('cordova is not defined')};
 
 /**
  * Constructor.
@@ -51,8 +51,6 @@ CortexDecoder.prototype.scan = function(options, successCallback, errorCallback)
         [options],
     );
 };
-
-
 
 var cortexDecoder = new CortexDecoder();
 module.exports = cortexDecoder;
