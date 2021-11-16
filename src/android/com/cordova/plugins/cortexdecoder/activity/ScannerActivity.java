@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -201,6 +202,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       else if (keys.size() == 1) stopDecodingAndReturn(mResultsMap);
       else {
         mCortexDecoderLibrary.stopDecoding();
+        mCameraFrame.setOnClickListener(tapListener);
         mCortexDecoderLibrary.stopCameraPreview();
       }
     }
@@ -219,6 +221,9 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
       mResultsMap.put(datas[i], result);
     }
+
+    // Draw the rectangles (this is called by the SDK but since we erase the rectangles in this method, we need to call it again)
+    receiveMultipleBarcodeCorners(cornersList);
 
   }
 
@@ -324,7 +329,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     debug(TAG, "stopScanning()");
 
     mCortexDecoderLibrary.stopDecoding();
-    mCameraFrame.setOnClickListener(tapListener);
     mCortexDecoderLibrary.stopCameraPreview();
 
     mCortexDecoderLibrary.closeCamera();
@@ -394,7 +398,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       float prw = (float) pHeight / sz.width;
 
       final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw, barcodeData);
-      bf.setOnClickListener(bfvClickListener);
+      bf.setOnTouchListener(bfvTouchListener);
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
@@ -408,7 +412,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       float prh = (float) pHeight / sz.height;
 
       final BarcodeFinderView bf = new BarcodeFinderView(this, corners, pWidth, pHeight, screenDiff, prh, prw, barcodeData);
-      bf.setOnClickListener(bfvClickListener);
+      bf.setOnTouchListener(bfvTouchListener);
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
@@ -420,18 +424,31 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     }
   }
 
-  View.OnClickListener bfvClickListener = new View.OnClickListener() {
+  View.OnTouchListener bfvTouchListener = new View.OnTouchListener() {
     @Override
-    public void onClick(View v) {
-      debug(TAG, "onBFVClick()");
+    public boolean onTouch(View v, MotionEvent event) {
+      debug(TAG, "onBFVTouch()");
 
-      BarcodeFinderView bfv = (BarcodeFinderView) v;
-      JSONObject barcode = mResultsMap.get(bfv.barcodeData);
+      // save the X,Y coordinates
+      if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+        BarcodeFinderView bfv = (BarcodeFinderView) v;
 
-      HashMap<String, JSONObject> barcodes = new HashMap<String, JSONObject>();
-      barcodes.put(bfv.barcodeData, barcode);
+        Point point = new Point();
+        point.x = (int)event.getX();
+        point.y = (int)event.getY();
 
-      stopDecodingAndReturn(barcodes);
+        if (bfv.barcodeRegion.contains((int)point.x,(int) point.y)) {
+          JSONObject barcode = mResultsMap.get(bfv.barcodeData);
+          HashMap<String, JSONObject> barcodes = new HashMap<String, JSONObject>();
+          barcodes.put(bfv.barcodeData, barcode);
+
+          stopDecodingAndReturn(barcodes);
+          return true;
+        }
+      }
+
+      // let the touch event pass on to whoever needs it
+      return false;
     }
   };
 
@@ -446,33 +463,4 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     }
   }
 
-  private void startTimer() {
-    if (mTimer == null)
-      mTimer = new Timer();
-
-    if (mTimerTask != null) {
-      mTimerTask.cancel();
-      mTimer.purge();
-    }
-
-    mTimerTask = new TimerTask() {
-      @Override
-      public void run() {
-        removeLocatorOverlays();
-      }
-    };
-
-    mTimer.schedule(mTimerTask, 250);
-  }
-
-  private void cancelTimer() {
-    if (mTimer != null) {
-      mTimer.cancel();
-      mTimer = null;
-    }
-    if (mTimerTask != null) {
-      mTimerTask.cancel();
-      mTimerTask = null;
-    }
-  }
 }

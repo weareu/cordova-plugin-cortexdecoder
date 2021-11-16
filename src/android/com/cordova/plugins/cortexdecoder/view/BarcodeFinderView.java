@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.view.WindowManager;
 public class BarcodeFinderView extends View {
 
   public String barcodeData;
+  public Region barcodeRegion;
   float p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y;
   float mWidth;
   int screenDiff;
@@ -85,6 +88,11 @@ public class BarcodeFinderView extends View {
       mPath.lineTo(mWidth + (-1 * p4y), p4x - screenDiff);
       mPath.lineTo(mWidth + (-1 * p1y), p1x - screenDiff - 7);
       c.drawPath(mPath, mPaint);
+
+      RectF rectF = new RectF();
+      mPath.computeBounds(rectF, true);
+      barcodeRegion = new Region();
+      barcodeRegion.setPath(mPath, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
     }
 
   }
@@ -117,6 +125,11 @@ public class BarcodeFinderView extends View {
     mPath.lineTo((p1x * xMulti) + xOffset, (p1y * yMulti) - yOffset);
 
     c.drawPath(mPath, mPaint);
+
+    RectF rectF = new RectF();
+    mPath.computeBounds(rectF, true);
+    barcodeRegion = new Region();
+    barcodeRegion.setPath(mPath, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
   }
 
 
@@ -137,6 +150,10 @@ public class BarcodeFinderView extends View {
     p.lineTo(tp1x, tp1y + mHeight - screenDiff);
     c.drawPath(p, paint);
 
+    RectF rectF = new RectF();
+    p.computeBounds(rectF, true);
+    barcodeRegion = new Region();
+    barcodeRegion.setPath(p, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
   }
 
 }
