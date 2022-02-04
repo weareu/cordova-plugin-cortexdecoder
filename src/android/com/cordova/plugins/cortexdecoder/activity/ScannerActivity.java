@@ -92,7 +92,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
         Log.d(TAG, "onActivationResult:" + statusCode);
         switch (statusCode) {
           case LicenseStatus_LicenseValid:
-            Toast.makeText(getApplicationContext(), "License Valid", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(), "License Valid", Toast.LENGTH_SHORT).show();
             break;
           case LicenseStatus_LicenseExpired:
             Date date = mCortexDecoderLibrary.getLicenseExpirationDate();
@@ -182,7 +182,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   @Override
   public void receivedMultipleDecodedData(String[] datas, SymbologyType[] types) {
     List<int[]> cornersList = mCortexDecoderLibrary.getBarcodeCornersArray();
-    if(cornersList != null) {
+    if (cornersList != null) {
       Log.e(TAG, "getBarcodeCornersArray length:" + cornersList.size());
     }
 
@@ -207,6 +207,17 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       }
     }
 
+    if (mLastResultTick == 0) {
+      new android.os.Handler(Looper.getMainLooper()).postDelayed(
+        new Runnable() {
+          public void run() {
+            receivedMultipleDecodedData(datas, types);
+          }
+        },
+        this.decodeForXMs
+      );
+    }
+
     for (int i = 0; i < datas.length; i++) {
       if (!mResultsMap.containsKey(datas[i])) mLastResultTick = now;
 
@@ -224,7 +235,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
     // Draw the rectangles (this is called by the SDK but since we erase the rectangles in this method, we need to call it again)
     receiveMultipleBarcodeCorners(cornersList);
-
   }
 
   public void stopDecodingAndReturn(final HashMap<String, JSONObject> barcodes) {
