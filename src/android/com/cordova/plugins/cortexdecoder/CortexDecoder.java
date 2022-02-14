@@ -117,6 +117,9 @@ public class CortexDecoder extends CordovaPlugin {
                   } else if (value instanceof String) {
                     intent.putExtra(key, (String) value);
                   }
+                  else if (value instanceof Boolean) {
+                      intent.putExtra(key, (Boolean) value);
+                  }
 
                 } catch (JSONException e) {
                   Log.i("CordovaLog", e.getLocalizedMessage());

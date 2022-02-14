@@ -43,9 +43,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import se.mobilelogic.logiccenter.mobile.R;
-
-
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
 
@@ -69,14 +66,21 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.scanner_activity);
-
     Context context = getApplicationContext();
+    int scanner_activity = context.getResources()
+            .getIdentifier("scanner_activity", "layout", context.getPackageName());
+
+    setContentView(scanner_activity);
+
     mCortexDecoderLibrary = CortexDecoderLibrary.sharedObject(context, "");
     mCortexDecoderLibrary.setCallback(this);
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
-    mCameraFrame = findViewById(R.id.cortex_scanner_view);
+
+    int cortex_scanner_view = context.getResources()
+            .getIdentifier("cortex_scanner_view", "id", context.getPackageName());
+
+    mCameraFrame = findViewById(cortex_scanner_view);
 
     if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
     mCameraFrame.addView(mCameraPreview, 0);
@@ -119,6 +123,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     int decoderTimeLimit = intent.getIntExtra("decoderTimeLimit", 0);
     int numberOfBarcodesToDecode = intent.getIntExtra("numberOfBarcodesToDecode", 1);
     boolean exactlyNBarcodes = intent.getBooleanExtra("exactlyNBarcodes", false);
+    boolean beepOnScanEnabled = intent.getBooleanExtra("beepOnScanEnabled", true);
 
     mCortexDecoderLibrary.setEDKCustomerID(customerID);
     mCortexDecoderLibrary.activateLicense(licenseKey);
@@ -126,6 +131,19 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
     mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
     mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
+
+    mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
+
+    //NB. Requires DPM enabled license.
+    boolean dpmEnabled = intent.getBooleanExtra("dpmEnabled", false);
+    if(dpmEnabled) {
+      String dpmTypeStr = intent.getStringExtra("dpmType");
+      if(dpmTypeStr == null || dpmTypeStr.length() == 0) {
+        dpmTypeStr = "CD_DPM_DarkOnLight";
+      }
+      CortexDecoderLibrary.CD_DPMType dpmType = CortexDecoderLibrary.CD_DPMType.valueOf(dpmTypeStr);
+      mCortexDecoderLibrary.setDPMProperty(dpmType);
+    }
 
     //Tablets more than likely are going to have a screen dp >= 600
     if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
