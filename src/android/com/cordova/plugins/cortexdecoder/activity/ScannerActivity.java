@@ -45,6 +45,7 @@ import java.util.TimerTask;
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
+  private static boolean sTorchState = false;
 
   private RelativeLayout mCameraFrame;
   private View mCameraPreview;
@@ -133,13 +134,14 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
     mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
     mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
+    mCortexDecoderLibrary.setTorch(sTorchState);
 
     if(mScanMultiple)
       mCortexDecoderLibrary.enableMultiResolutionDecoding(mScanMultiple);
 
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
-    //NB. Requires DPM enabled license.
+    // NB. Requires DPM enabled license.
     boolean dpmEnabled = intent.getBooleanExtra("dpmEnabled", false);
     if(dpmEnabled) {
       String dpmTypeStr = intent.getStringExtra("dpmType");
@@ -150,7 +152,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       mCortexDecoderLibrary.setDPMProperty(dpmType);
     }
 
-    //Tablets more than likely are going to have a screen dp >= 600
+    // Tablets more than likely are going to have a screen dp >= 600
     if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
       // Lock phone form factor to portrait.
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -499,6 +501,11 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     }else{
       return "";
     }
+  }
+
+  public void toggleTorch(View view) {
+    sTorchState = !sTorchState;
+    mCortexDecoderLibrary.setTorch(sTorchState);
   }
 
 }
