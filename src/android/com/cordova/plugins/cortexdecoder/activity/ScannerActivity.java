@@ -61,6 +61,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
   private ArrayList<BarcodeFinderView> bfArr = new ArrayList<BarcodeFinderView>();
   private int decodeForXMs = 250;
+  private boolean mScanMultiple = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     int numberOfBarcodesToDecode = intent.getIntExtra("numberOfBarcodesToDecode", 1);
     boolean exactlyNBarcodes = intent.getBooleanExtra("exactlyNBarcodes", false);
     boolean beepOnScanEnabled = intent.getBooleanExtra("beepOnScanEnabled", true);
+    mScanMultiple = intent.getBooleanExtra("scanMultiple", false);
 
     mCortexDecoderLibrary.setEDKCustomerID(customerID);
     mCortexDecoderLibrary.activateLicense(licenseKey);
@@ -131,6 +133,9 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
     mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
     mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
+
+    if(mScanMultiple)
+      mCortexDecoderLibrary.enableMultiResolutionDecoding(mScanMultiple);
 
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
@@ -251,8 +256,13 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       mResultsMap.put(datas[i], result);
     }
 
-    // Draw the rectangles (this is called by the SDK but since we erase the rectangles in this method, we need to call it again)
-    receiveMultipleBarcodeCorners(cornersList);
+    if(mScanMultiple) {
+      stopDecodingAndReturn(mResultsMap);
+    }
+    else {
+      // Draw the rectangles (this is called by the SDK but since we erase the rectangles in this method, we need to call it again)
+      receiveMultipleBarcodeCorners(cornersList);
+    }
   }
 
   public void stopDecodingAndReturn(final HashMap<String, JSONObject> barcodes) {
