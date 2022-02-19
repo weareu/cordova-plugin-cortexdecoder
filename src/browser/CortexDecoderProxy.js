@@ -1,19 +1,19 @@
 function scan(success, error) {
-    var code = window.prompt("Enter barcode value (empty value will fire the error handler):");
+    var code = window.prompt('Enter barcode value (empty value will fire the error handler):');
     if(code) {
         var result = {
-            text:code,
-            format:"Fake",
-            cancelled:false
+            text: code,
+            format: 'Fake',
+            cancelled: false
         };
         success(result);
     } else {
-        error("No barcode");
+        error('No barcode');
     }
 }
 
 module.exports = {
-    scan: scan,
+    scan: scan
 };
 
-require("cordova/exec/proxy").add("CortexDecoder",module.exports);
+require('cordova/exec/proxy').add('CortexDecoder',module.exports);

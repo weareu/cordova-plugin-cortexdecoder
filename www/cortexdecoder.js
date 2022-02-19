@@ -28,11 +28,11 @@ CortexDecoder.prototype.scan = function(options, successCallback, errorCallback)
     this.scanInProgress = true;
 
     cordova.exec(
-        (result) => {
+        function(result) {
             this.scanInProgress = false;
             successCallback(result);
         },
-        (error) => {
+        function(error) {
             this.scanInProgress = false;
             errorCallback(error);
         },
