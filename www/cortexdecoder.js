@@ -31,11 +31,11 @@ CortexDecoder.prototype.scan = function(options, successCallback, errorCallback)
         function(result) {
             this.scanInProgress = false;
             successCallback(result);
-        },
+        }.bind(this),
         function(error) {
             this.scanInProgress = false;
             errorCallback(error);
-        },
+        }.bind(this),
         'CortexDecoder',
         'scan',
         [options]
