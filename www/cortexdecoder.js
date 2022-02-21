@@ -38,7 +38,7 @@ CortexDecoder.prototype.scan = function(options, successCallback, errorCallback)
         },
         'CortexDecoder',
         'scan',
-        [options],
+        [options]
     );
 };
 
