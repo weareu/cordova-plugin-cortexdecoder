@@ -254,12 +254,12 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
         byte[] data = new byte[sData.length()];
         char[] chars = new char[sData.length()];
         sData.getChars(0, sData.length(), chars, 0);
-        for (int i = 0;i < sData.length(); i++) {
-            data[i] = (byte)chars[i];
+        for (int si = 0; si < sData.length(); si++) {
+            data[si] = (byte)chars[si];
         }
 
         result.put("barcodeData", sData);
-        result.put("barcodeDataBase64", Base64.getEncoder().encode(sData));
+        result.put("barcodeDataBase64", android.util.Base64.encodeToString(sData));
         
         result.put("symbologyName", CortexDecoderLibrary.stringFromSymbologyType(types[i]));
         result.put("corners", cornersList.get(i));
