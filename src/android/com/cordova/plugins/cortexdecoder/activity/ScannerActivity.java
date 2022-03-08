@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.util.Base64;
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
@@ -248,7 +249,18 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
       JSONObject result = new JSONObject();
       try {
-        result.put("barcodeData", datas[i]);
+        String sData = datas[i];
+        
+        byte[] data = new byte[sData.length()];
+        char[] chars = new char[sData.length()];
+        sData.getChars(0, sData.length(), chars, 0);
+        for (int i = 0;i < sData.length(); i++) {
+            data[i] = (byte)chars[i];
+        }
+
+        result.put("barcodeData", sData);
+        result.put("barcodeDataBase64", Base64.getEncoder().encode(sData));
+        
         result.put("symbologyName", CortexDecoderLibrary.stringFromSymbologyType(types[i]));
         result.put("corners", cornersList.get(i));
       } catch (JSONException e) {
