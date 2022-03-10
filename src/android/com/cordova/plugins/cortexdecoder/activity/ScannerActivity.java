@@ -153,6 +153,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       mCortexDecoderLibrary.setEncodingCharsetName(DEFAULT_ENCODING);
     }
 
+    mCortexDecoderLibrary.setPreprocessType(CortexDecoderLibrary.CD_PreprocessType.CD_PreProcDeblur1dMethod1);
+
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
     // NB. Requires DPM enabled license.
