@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.util.Base64;
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
@@ -58,8 +57,6 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   private long mLastResultTick;
   private Handler mMainHandler;
   private HashMap<String, JSONObject> mResultsMap;
-  private Timer mTimer;
-  private TimerTask mTimerTask;
 
   private ArrayList<BarcodeFinderView> bfArr = new ArrayList<BarcodeFinderView>();
   private int decodeForXMs = 250;
@@ -140,6 +137,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     if(mScanMultiple)
       mCortexDecoderLibrary.enableMultiResolutionDecoding(mScanMultiple);
 
+    mCortexDecoderLibrary.setEncodingCharsetName("ASCII");
+
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
     // NB. Requires DPM enabled license.
@@ -198,6 +197,14 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
         }
       }
     });
+  }
+
+  public static String byteArrayToHexString(final byte[] bytes) {
+    StringBuilder sb = new StringBuilder();
+    for(byte b : bytes){
+      sb.append(String.format("%02x", b&0xff));
+    }
+    return sb.toString();
   }
 
   @Override
@@ -259,7 +266,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
         }
 
         result.put("barcodeData", sData);
-        result.put("barcodeDataBase64", android.util.Base64.encodeToString(sData));
+        result.put("barcodeDataHEX", byteArrayToHexString(data));
         
         result.put("symbologyName", CortexDecoderLibrary.stringFromSymbologyType(types[i]));
         result.put("corners", cornersList.get(i));
