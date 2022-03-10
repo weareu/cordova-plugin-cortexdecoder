@@ -147,6 +147,9 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       mCortexDecoderLibrary.enableMultiResolutionDecoding(true);
 
     if(encoding != null && !encoding.isEmpty()) {
+      mCortexDecoderLibrary.setEncodingCharsetName(encoding);
+    }
+    else {
       mCortexDecoderLibrary.setEncodingCharsetName(DEFAULT_ENCODING);
     }
 
