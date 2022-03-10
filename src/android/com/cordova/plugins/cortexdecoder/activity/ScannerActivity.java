@@ -39,12 +39,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
+
+  private static String DEFAULT_ENCODING = "ISO-8859-1";
+
   private static boolean sTorchState = false;
 
   private RelativeLayout mCameraFrame;
@@ -120,24 +124,31 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
     String customerID = intent.getStringExtra("customerID");
     String licenseKey = intent.getStringExtra("licenseKey");
+
+    String encoding = intent.getStringExtra("encodingCharsetName");
+
     int decoderTimeLimit = intent.getIntExtra("decoderTimeLimit", 0);
     int numberOfBarcodesToDecode = intent.getIntExtra("numberOfBarcodesToDecode", 1);
     boolean exactlyNBarcodes = intent.getBooleanExtra("exactlyNBarcodes", false);
     boolean beepOnScanEnabled = intent.getBooleanExtra("beepOnScanEnabled", true);
+
     mScanMultiple = intent.getBooleanExtra("scanMultiple", false);
 
     mCortexDecoderLibrary.setEDKCustomerID(customerID);
     mCortexDecoderLibrary.activateLicense(licenseKey);
 
+    mCortexDecoderLibrary.setPreprocessType(CortexDecoderLibrary.CD_PreprocessType.CD_PreProcLowPass2);
     mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
     mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
     mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
     mCortexDecoderLibrary.setTorch(sTorchState);
 
     if(mScanMultiple)
-      mCortexDecoderLibrary.enableMultiResolutionDecoding(mScanMultiple);
+      mCortexDecoderLibrary.enableMultiResolutionDecoding(true);
 
-    mCortexDecoderLibrary.setEncodingCharsetName("ASCII");
+    if(encoding != null && !encoding.isEmpty()) {
+      mCortexDecoderLibrary.setEncodingCharsetName(DEFAULT_ENCODING);
+    }
 
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
@@ -204,7 +215,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     for(byte b : bytes){
       sb.append(String.format("%02x", b&0xff));
     }
-    return sb.toString();
+    return sb.toString().toUpperCase(Locale.ROOT);
   }
 
   @Override
@@ -526,5 +537,4 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     sTorchState = !sTorchState;
     mCortexDecoderLibrary.setTorch(sTorchState);
   }
-
 }
