@@ -138,6 +138,8 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.activateLicense(licenseKey);
 
     mCortexDecoderLibrary.setPreprocessType(CortexDecoderLibrary.CD_PreprocessType.CD_PreProcLowPass2);
+    mCortexDecoderLibrary.setPreprocessType(CortexDecoderLibrary.CD_PreprocessType.CD_PreProcDeblur1dMethod1);
+
     mCortexDecoderLibrary.decoderTimeLimitInMilliseconds(decoderTimeLimit);
     mCortexDecoderLibrary.setNumberOfBarcodesToDecode(numberOfBarcodesToDecode);
     mCortexDecoderLibrary.setExactlyNBarcodes(exactlyNBarcodes);
@@ -152,9 +154,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     else {
       mCortexDecoderLibrary.setEncodingCharsetName(DEFAULT_ENCODING);
     }
-
-    mCortexDecoderLibrary.setPreprocessType(CortexDecoderLibrary.CD_PreprocessType.CD_PreProcDeblur1dMethod1);
-
+    mCortexDecoderLibrary.setVerificationType(CortexDecoderLibrary.CD_VerificationType.CD_Verification_None);
     mCortexDecoderLibrary.enableBeepPlayer(beepOnScanEnabled);
 
     // NB. Requires DPM enabled license.
@@ -273,7 +273,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
       JSONObject result = new JSONObject();
       try {
         String sData = datas[i];
-        
+
         byte[] data = new byte[sData.length()];
         char[] chars = new char[sData.length()];
         sData.getChars(0, sData.length(), chars, 0);
@@ -283,7 +283,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
 
         result.put("barcodeData", sData);
         result.put("barcodeDataHEX", byteArrayToHexString(data));
-        
+
         result.put("symbologyName", CortexDecoderLibrary.stringFromSymbologyType(types[i]));
         result.put("corners", cornersList.get(i));
       } catch (JSONException e) {
