@@ -70,14 +70,14 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(android.R.layout.scanner_activity);
+    setContentView(R.layout.scanner_activity);
 
     Context context = getApplicationContext();
     mCortexDecoderLibrary = CortexDecoderLibrary.sharedObject(context, "");
     mCortexDecoderLibrary.setCallback(this);
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
-    mCameraFrame = findViewById(android.R.id.cortex_scanner_view);
+    mCameraFrame = findViewById(R.id.cortex_scanner_view);
 
     if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
     mCameraFrame.addView(mCameraPreview, 0);
