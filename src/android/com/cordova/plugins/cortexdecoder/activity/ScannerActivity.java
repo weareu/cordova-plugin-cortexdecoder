@@ -43,6 +43,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import se.mobilelogic.logiccenter.mobile.R;
+
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
