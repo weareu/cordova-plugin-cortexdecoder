@@ -43,7 +43,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import se.mobilelogic.logiccenter.mobile.R;
+import android.app.Application;
+import android.content.res.Resources;
 
 
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
@@ -70,14 +71,18 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.scanner_activity);
+    Application app = this.getApplication();
+    String package_name = app.getPackageName();
+    Resources resources = app.getResources();
+      
+    setContentView(resources.getIdentifier("scanner_activity", "layout", package_name));
 
     Context context = getApplicationContext();
     mCortexDecoderLibrary = CortexDecoderLibrary.sharedObject(context, "");
     mCortexDecoderLibrary.setCallback(this);
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
-    mCameraFrame = findViewById(R.id.cortex_scanner_view);
+    mCameraFrame = findViewById(resources.getIdentifier("cortex_scanner_view", "id", package_name));
 
     if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
     mCameraFrame.addView(mCameraPreview, 0);
