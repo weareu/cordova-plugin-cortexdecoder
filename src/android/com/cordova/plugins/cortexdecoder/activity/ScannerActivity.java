@@ -44,6 +44,10 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Application;
+import android.content.res.Resources;
+
+
 public class ScannerActivity extends Activity implements CortexDecoderLibraryCallback {
   public static final String TAG = ScannerActivity.class.getSimpleName();
 
@@ -70,6 +74,12 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    Application app = this.getApplication();
+    String package_name = app.getPackageName();
+    Resources resources = app.getResources();
+
+    setContentView(resources.getIdentifier("scanner_activity", "layout", package_name));
+
     Context context = getApplicationContext();
     int scanner_activity = context.getResources()
             .getIdentifier("scanner_activity", "layout", context.getPackageName());
@@ -80,11 +90,7 @@ public class ScannerActivity extends Activity implements CortexDecoderLibraryCal
     mCortexDecoderLibrary.setCallback(this);
 
     mCameraPreview = mCortexDecoderLibrary.getCameraPreview();
-
-    int cortex_scanner_view = context.getResources()
-            .getIdentifier("cortex_scanner_view", "id", context.getPackageName());
-
-    mCameraFrame = findViewById(cortex_scanner_view);
+    mCameraFrame = findViewById(resources.getIdentifier("cortex_scanner_view", "id", package_name));
 
     if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
     mCameraFrame.addView(mCameraPreview, 0);
