@@ -1,0 +1,1229 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.3 effective-5.10 (swiftlang-6.0.3.1.10 clang-1600.0.30.1)
+// swift-module-flags: -target x86_64-apple-ios14.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name CortexDecoder
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AVFoundation
+import CoreGraphics
+import CoreMotion
+@_exported import CortexDecoder
+import ExternalAccessory
+import Foundation
+import Security
+import Swift
+import SystemConfiguration
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class AustraliaPost : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.AustraliaPost
+  @objc public func setAustraliaPost(enable: Swift.Bool)
+  @objc public func getAustraliaPost() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class EAN13 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.EAN13
+  @objc public func setEAN13(enable: Swift.Bool)
+  @objc public func getEAN13() -> Swift.Bool
+  @objc public func setStripCheckDigit(enable: Swift.Bool)
+  @objc public func getStripCheckDigit() -> Swift.Bool
+  @objc public func setSupplement2Digit(enable: Swift.Bool)
+  @objc public func getSupplement2Digit() -> Swift.Bool
+  @objc public func setSupplement5Digit(enable: Swift.Bool)
+  @objc public func getSupplement5Digit() -> Swift.Bool
+  @objc public func setSupplementAddSpace(enable: Swift.Bool)
+  @objc public func getSupplementAddSpace() -> Swift.Bool
+  @objc public func setSupplementRequired(enable: Swift.Bool)
+  @objc public func getSupplementRequired() -> Swift.Bool
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class CDResult : ObjectiveC.NSObject {
+  @objc public var barcodeData: Swift.String
+  @objc public var rawData: Foundation.Data
+  @objc public var symbology: Swift.String
+  @objc public var rawSymbology: CortexDecoder.CDSymbology.CDSymbologyType
+  @objc public var status: CortexDecoder.CDResult.CDDecodeStatus
+  @objc public var barcodeCoordinates: [CoreFoundation.CGPoint]
+  @objc public var decodeTime: Swift.Int
+  @objc public var totalDecodeTime: Swift.Int
+  @objc public var codewords: CortexDecoder.CDCodewords
+  @objc public var verification: CortexDecoder.CDVerification
+  @objc public var licenseResult: CortexDecoder.CDLicenseResult
+  @objc public var image: UIKit.UIImage
+  @objc public enum CDDecodeStatus : Swift.Int {
+    case success
+    case noDecode
+    case noActiveLicense
+    case decodingDisabled
+    case noUniqueDecode
+    case decodedQRConfigCode
+    case failedQRConfigCode
+    case licenseExpired
+    case `internal`
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class HanXin : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.HanXin
+  @objc public func setHanXin(enable: Swift.Bool)
+  @objc public func getHanXin() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class KoreaPost : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.KoreaPost
+  @objc public func setKoreaPost(enable: Swift.Bool)
+  @objc public func getKoreaPost() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UspsIntelligentMail : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UspsIntelligentMail
+  @objc public func setUspsIntelligent(enable: Swift.Bool)
+  @objc public func getUspsIntelligent() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Telepen : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Telepen
+  @objc public func setTelepen(enable: Swift.Bool)
+  @objc public func getTelepen() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class PDF417 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.PDF417
+  @objc public func setPDF417(enable: Swift.Bool)
+  @objc public func getPDF417() -> Swift.Bool
+  @objc public func setMicroPDF417(enable: Swift.Bool)
+  @objc public func getMicroPDF417() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Aztec : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Aztec
+  @objc public enum AztecPolarity : Swift.Int {
+    case either = 0
+    case darkOnLight = 1
+    case lightOnDark = -1
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setAztec(enable: Swift.Bool)
+  @objc public func getAztec() -> Swift.Bool
+  @objc public func setMirror(enable: Swift.Bool)
+  @objc public func getMirror() -> Swift.Bool
+  @objc public func setPolarity(polarity: CortexDecoder.Aztec.AztecPolarity)
+  @objc public func getPolarity() -> CortexDecoder.Aztec.AztecPolarity
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UspsPostnet : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UspsPostnet
+  @objc public func setUspsPostnet(enable: Swift.Bool)
+  @objc public func getUspsPostnet() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDCodewords : ObjectiveC.NSObject {
+  @objc public var numberOfCodewords: Swift.Int
+  @objc public var numberOfShortCodewordsBlock: Swift.Int
+  @objc public var numberOfLongCodewordsBlock: Swift.Int
+  @objc public var numberOfDataCodewords: Swift.Int
+  @objc public var numberOfErrorCodewords: Swift.Int
+  @objc public var eccBefore: Foundation.Data
+  @objc public var eccAfter: Foundation.Data
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code39 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code39
+  @objc public enum Code39Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setCode39(enable: Swift.Bool)
+  @objc public func getCode39() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Code39.Code39Checksum)
+  @objc public func getChecksum() -> CortexDecoder.Code39.Code39Checksum
+  @objc public func setAscii(enable: Swift.Bool)
+  @objc public func getAscii() -> Swift.Bool
+  @objc public func setSendStartStopCharacters(enable: Swift.Bool)
+  @objc public func getSendStartStopCharacters() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class DutchPost : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.DutchPost
+  @objc public func setDutchPost(enable: Swift.Bool)
+  @objc public func getDutchPost() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code93 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code93
+  @objc public func setCode93(enable: Swift.Bool)
+  @objc public func getCode93() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class MSIPlessey : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.MSIPlessey
+  @objc public enum MSIPlesseyChecksum : Swift.Int {
+    case disable = 0
+    case mod10 = 1
+    case mod10_10 = 2
+    case mod11_10 = 3
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setMSIPlessey(enable: Swift.Bool)
+  @objc public func getMSIPlessey() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.MSIPlessey.MSIPlesseyChecksum)
+  @objc public func getChecksum() -> CortexDecoder.MSIPlessey.MSIPlesseyChecksum
+  @objc public func setStripChecksum(enable: Swift.Bool)
+  @objc public func getStripChecksum() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc public class CDRange : ObjectiveC.NSObject {
+  @objc public var minimumRange: CoreFoundation.CGFloat
+  @objc public var maximumRange: CoreFoundation.CGFloat
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code128 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code128
+  @objc public func setCode128(enable: Swift.Bool)
+  @objc public func getCode128() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class GridMatrix : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.GridMatrix
+  @objc public enum GridMatrixPolarity : Swift.Int {
+    case either = 0
+    case darkOnLight = 1
+    case lightOnDark = -1
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setGridMatrix(enable: Swift.Bool)
+  @objc public func getGridMatrix() -> Swift.Bool
+  @objc public func setMirror(enable: Swift.Bool)
+  @objc public func getMirror() -> Swift.Bool
+  @objc public func setPolarity(polarity: CortexDecoder.GridMatrix.GridMatrixPolarity)
+  @objc public func getPolarity() -> CortexDecoder.GridMatrix.GridMatrixPolarity
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDDecoder : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDDecoder
+  @objc weak public var multiFrameProtocol: (any CortexDecoder.CDMultiFrameDelegate)?
+  @objc weak public var decodeResultProtocol: (any CortexDecoder.CDDecodeResultDelegate)?
+  @objc public enum CDSecurityLevel : Swift.Int {
+    case level0
+    case level1
+    case level2
+    case level3
+    case level11
+    case level12
+    @available(iOS, deprecated: 4.7.3, message: "level61 is no longer required.")
+    case level61
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDCustomMode : Swift.Int {
+    case disable
+    case shortRange
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDDecodeMode : Swift.Int {
+    case camera
+    case image
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDImageSaving : Swift.Int {
+    case none
+    case first
+    case firstDecoded
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDPreprocessType : Swift.Int {
+    case disable = 0
+    case lowPass2 = 2
+    case deblur1dMethod1 = 5
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func decoderVersion() -> Swift.String
+  @objc public func libraryVersion() -> Swift.String
+  @objc public func decode(sampleBuffer: CoreMedia.CMSampleBuffer, completion: @escaping ([CortexDecoder.CDResult]) -> Swift.Void)
+  @objc public func setBarcodesToDecode(number: Swift.Int, decodeExactly: Swift.Bool)
+  @objc public func setTimeLimit(timeLimit: Swift.Int)
+  @objc public func getTimeLimit() -> Swift.Int
+  @objc public func setPicklistMode(picklist: Swift.Int)
+  @objc public func getPicklistMode() -> Swift.Int
+  @objc public func setSecurityLevel(level: CortexDecoder.CDDecoder.CDSecurityLevel)
+  @objc public func getSecurityLevel() -> CortexDecoder.CDDecoder.CDSecurityLevel
+  @objc public func setSource(source: CortexDecoder.CDDecoder.CDDecodeMode)
+  @objc public func getSource() -> CortexDecoder.CDDecoder.CDDecodeMode
+  @objc public func setRegionOfInterest(region: CoreFoundation.CGRect, ensureCorners: Swift.Bool)
+  @objc public func setImageSaving(setting: CortexDecoder.CDDecoder.CDImageSaving)
+  @objc public func getImageSaving() -> CortexDecoder.CDDecoder.CDImageSaving
+  @objc public func deleteImages()
+  @available(iOS, deprecated: 4.7.0, message: "API is now part of CDCamera class.")
+  @objc public func setHighlightBarcodes(enable: Swift.Bool)
+  @available(iOS, deprecated: 4.7.0, message: "API is now part of CDCamera class.")
+  @objc public func getHighlightBarcodes() -> Swift.Bool
+  @objc public func setMultiFrameDecoding(enable: Swift.Bool)
+  @objc public func convertUIImageToCMSampleBuffer(image: UIKit.UIImage) -> CoreMedia.CMSampleBuffer?
+  @objc public func setDecoding(enable: Swift.Bool)
+  @objc public func getDecoding() -> Swift.Bool
+  @objc public func setCustomMode(setting: CortexDecoder.CDDecoder.CDCustomMode)
+  @objc public func getCustomMode() -> CortexDecoder.CDDecoder.CDCustomMode
+  @objc public func setPreprocessType(setting: CortexDecoder.CDDecoder.CDPreprocessType)
+  @objc public func getPreprocessType() -> CortexDecoder.CDDecoder.CDPreprocessType
+  @objc public func setCodewords(enable: Swift.Bool)
+  @objc public func getCodewords() -> Swift.Bool
+  @objc public func setMultiCodeOutputByPriority(enable: Swift.Bool)
+  @objc public func getMultiCodeOutputByPriority() -> Swift.Bool
+  @objc public func setDuplicateDelay(time: Swift.Float)
+  @objc public func getDuplicateDelay() -> Swift.Float
+  @objc public func setConfigurationString(configurationString: Swift.String) -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDLicense : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDLicense
+  @objc public func activateLicense(key: Swift.String, completion: @escaping (CortexDecoder.CDLicenseResult) -> Swift.Void)
+  @objc public func setCustomerID(customerID: Swift.String)
+  @objc public func getLicensedSymbologies() -> Foundation.NSSet
+  @objc public func getLicensedPerformanceFeatures() -> Foundation.NSSet
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Codabar : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Codabar
+  @objc public enum CodabarChecksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setCodabar(enable: Swift.Bool)
+  @objc public func getCodabar() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Codabar.CodabarChecksum)
+  @objc public func getChecksum() -> CortexDecoder.Codabar.CodabarChecksum
+  @objc public func setStripStartStopCharacters(enable: Swift.Bool)
+  @objc public func getStripStartStopCharacters() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Plessey : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Plessey
+  @objc public func setPlessey(enable: Swift.Bool)
+  @objc public func getPlessey() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code32 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code32
+  @objc public func setCode32(enable: Swift.Bool)
+  @objc public func getCode32() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Dotcode : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Dotcode
+  @objc public enum DotcodePolarity : Swift.Int {
+    case either = 0
+    case darkOnLight = 1
+    case lightOnDark = -1
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setDotCode(enable: Swift.Bool)
+  @objc public func getDotcode() -> Swift.Bool
+  @objc public func setMirror(enable: Swift.Bool)
+  @objc public func getMirror() -> Swift.Bool
+  @objc public func setPolarity(polarity: CortexDecoder.Dotcode.DotcodePolarity)
+  @objc public func getPolarity() -> CortexDecoder.Dotcode.DotcodePolarity
+  @objc deinit
+}
+@objc public protocol CDDecodeResultDelegate {
+  @objc func barcodeData(decodeResult: [CortexDecoder.CDResult])
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class IATA2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.IATA2Of5
+  @objc public enum IATA2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setIATA2Of5(enable: Swift.Bool)
+  @objc public func getIATA2Of5() -> Swift.Bool
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc public func setChecksum(checksum: CortexDecoder.IATA2Of5.IATA2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.IATA2Of5.IATA2Of5Checksum
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code11 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code11
+  @objc public enum Code11Checksum : Swift.Int {
+    case disable = 0
+    case digit1 = 1
+    case digit2 = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setCode11(enable: Swift.Bool)
+  @objc public func getCode11() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Code11.Code11Checksum)
+  @objc public func getChecksum() -> CortexDecoder.Code11.Code11Checksum
+  @objc public func setStripChecksum(enable: Swift.Bool)
+  @objc public func getStripChecksum() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class HongKong2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.HongKong2Of5
+  @objc public enum HongKong2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setHongKong2Of5(enable: Swift.Bool)
+  @objc public func getHongKong2Of5() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.HongKong2Of5.HongKong2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.HongKong2Of5.HongKong2Of5Checksum
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDPerformanceFeatures : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDPerformanceFeatures
+  @objc public enum CDPerformanceType : Swift.Int {
+    case undefined
+    case lowContrast
+    case multicode
+    case dpm
+    case dlParsing
+    case gs1Parsing
+    case udiParsing
+    case verifier
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDDataParsing : Swift.Int {
+    case disable = 0
+    case dlParsing = 1
+    case jsonParsing = 2
+    case strMatchReplace = 4
+    case gs1Parsing = 5
+    case udiParsing = 6
+    case isoParsing = 7
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDDPM : Swift.Int {
+    case disable
+    case dotPeenDarkOnLight
+    case dotPeenLightOnDark
+    case laserChemEtch
+    case dotpeenAndEtch
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDVerifier : Swift.Int {
+    case disable = 0
+    case iso15415 = 1
+    case aimdpm = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func getStringFromPerformanceType(performanceType: CortexDecoder.CDPerformanceFeatures.CDPerformanceType) -> Swift.String
+  @objc public func setLowContrast(lowContrast: Swift.Bool)
+  @objc public func getLowContrast() -> Swift.Bool
+  @objc public func setDataParsing(parsing: CortexDecoder.CDPerformanceFeatures.CDDataParsing, configString: Swift.String)
+  @objc public func getDataParsing() -> CortexDecoder.CDPerformanceFeatures.CDDataParsing
+  @objc public func getConfigStringForDataParsing(dataParsing: CortexDecoder.CDPerformanceFeatures.CDDataParsing) -> Swift.String
+  @objc public func setDataFormatting(enable: Swift.Bool, formatString: Swift.String)
+  @objc public func getDataFormatting() -> Swift.Bool
+  @objc public func getConfigStringForDataFormatting() -> Swift.String
+  @objc public func setDPM(dpm: CortexDecoder.CDPerformanceFeatures.CDDPM)
+  @objc public func getDPM() -> CortexDecoder.CDPerformanceFeatures.CDDPM
+  @objc public func setVerification(type: CortexDecoder.CDPerformanceFeatures.CDVerifier)
+  @objc public func getVerification() -> CortexDecoder.CDPerformanceFeatures.CDVerifier
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Trioptic : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Trioptic
+  @objc public func setTrioptic(enable: Swift.Bool)
+  @objc public func getTrioptic() -> Swift.Bool
+  @objc public func setSendStartStopCharacters(enable: Swift.Bool)
+  @objc public func getSendStartStopCharacters() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class EAN8 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.EAN8
+  @objc public func setEAN8(enable: Swift.Bool)
+  @objc public func getEAN8() -> Swift.Bool
+  @objc public func setStripCheckDigit(enable: Swift.Bool)
+  @objc public func getStripCheckDigit() -> Swift.Bool
+  @objc public func setConvertToEAN13(enable: Swift.Bool)
+  @objc public func getConvertToEAN13() -> Swift.Bool
+  @objc public func setSupplement2Digit(enable: Swift.Bool)
+  @objc public func getSupplement2Digit() -> Swift.Bool
+  @objc public func setSupplement5Digit(enable: Swift.Bool)
+  @objc public func getSupplement5Digit() -> Swift.Bool
+  @objc public func setSupplementAddSpace(enable: Swift.Bool)
+  @objc public func getSupplementAddSpace() -> Swift.Bool
+  @objc public func setSupplementRequired(enable: Swift.Bool)
+  @objc public func getSupplementRequired() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class NEC2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.NEC2Of5
+  @objc public enum NEC2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setNEC2Of5(enable: Swift.Bool)
+  @objc public func getNEC2Of5() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.NEC2Of5.NEC2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.NEC2Of5.NEC2Of5Checksum
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Straight2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Straight2Of5
+  @objc public enum Straight2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setStraight2Of5(enable: Swift.Bool)
+  @objc public func getStraight2Of5() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Straight2Of5.Straight2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.Straight2Of5.Straight2Of5Checksum
+  @objc deinit
+}
+@objc public protocol CDSledEventDelegate {
+  @objc func sledAccessoryUpdate(eventType: CortexDecoder.CDSled.CDSledEvent)
+  @objc func sledAccessoryBatteryUpdate(chargingStatus: Swift.String, batteryLevel: Swift.String)
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class GS1Databar : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.GS1Databar
+  @objc public func setGS1Databar(enable: Swift.Bool)
+  @objc public func getGS1Databar() -> Swift.Bool
+  @objc public func setOmniTruncated(enable: Swift.Bool)
+  @objc public func getOmniTruncated() -> Swift.Bool
+  @objc public func setLimited(enable: Swift.Bool)
+  @objc public func getLimited() -> Swift.Bool
+  @objc public func setStacked(enable: Swift.Bool)
+  @objc public func getStacked() -> Swift.Bool
+  @objc public func setExpanded(enable: Swift.Bool)
+  @objc public func getExpanded() -> Swift.Bool
+  @objc public func setExpandedStacked(enable: Swift.Bool)
+  @objc public func getExpandedStacked() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CanadaPost : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CanadaPost
+  @objc public func setCanadaPost(enable: Swift.Bool)
+  @objc public func getCanadaPost() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDCamera : ObjectiveC.NSObject, AVFoundation.AVCaptureVideoDataOutputSampleBufferDelegate {
+  @objc public static let shared: CortexDecoder.CDCamera
+  @objc public enum CDPosition : Swift.Int {
+    case back
+    case front
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDResolution : Swift.Int {
+    case res1280x720
+    case res1920x1080
+    case res3840x2160
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDFocus : Swift.Int {
+    case auto
+    case near
+    case far
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDTorch : Swift.Int {
+    case auto
+    case off
+    case on
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDAGCMode : Swift.Int {
+    case disable
+    case mode1
+    case mode2
+    case auto
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDExposureTime : Swift.Int {
+    case min
+    case max
+    case initial
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDISO : Swift.Int {
+    case min
+    case max
+    case initial
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDCameraLens : Swift.Int {
+    case wideAngle
+    case telephoto
+    case ultraWide
+    case auto
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setCameraPosition(position: CortexDecoder.CDCamera.CDPosition)
+  @objc public func getCameraPosition() -> CortexDecoder.CDCamera.CDPosition
+  @objc public func setResolution(resolution: CortexDecoder.CDCamera.CDResolution)
+  @objc public func getResolution() -> CortexDecoder.CDCamera.CDResolution
+  @objc public func isResolutionSupported(resolution: CortexDecoder.CDCamera.CDResolution) -> Swift.Bool
+  @objc public func setFocus(focus: CortexDecoder.CDCamera.CDFocus)
+  @objc public func getFocus() -> CortexDecoder.CDCamera.CDFocus
+  @objc public func isFocusSupported(focus: CortexDecoder.CDCamera.CDFocus) -> Swift.Bool
+  @objc public func setFixedFocusRange(range: Swift.Float)
+  @objc public func getFixedFocusRange() -> Swift.Float
+  @objc public func isFixedFocusRangeSupported() -> Swift.Bool
+  @objc public func setZoom(zoomValue: CoreFoundation.CGFloat)
+  @objc public func getZoom() -> CoreFoundation.CGFloat
+  @objc public func getSupportedZoomRange() -> CortexDecoder.CDRange
+  @objc public func setTorch(torch: CortexDecoder.CDCamera.CDTorch)
+  @objc public func getTorch() -> CortexDecoder.CDCamera.CDTorch
+  @objc public func setTorchBrightness(brightness: Swift.Float)
+  @objc public func getTorchBrightness() -> Swift.Float
+  @objc public func isTorchSupported() -> Swift.Bool
+  @objc public func setVideoCapturing(value: Swift.Bool)
+  @objc public func getVideoCapturing() -> Swift.Bool
+  @objc public func setAutoVideoCapturing(enable: Swift.Bool)
+  @objc public func getAutoVideoCapturing() -> Swift.Bool
+  @available(*, deprecated, renamed: "startPreview")
+  @objc public func getPreview(frame: CoreFoundation.CGRect) -> UIKit.UIView
+  @objc public func startPreview(frame: CoreFoundation.CGRect) -> UIKit.UIView
+  @objc public func stopPreview()
+  @objc public func setVideoOrientation(deviceOrientation: UIKit.UIDeviceOrientation)
+  @objc public func getVideoOrientation() -> UIKit.UIDeviceOrientation
+  @available(iOS 15.4, *)
+  @objc public func setCamera(type: CortexDecoder.CDCamera.CDCameraLens)
+  @available(iOS 15.4, *)
+  @objc public func getCamera() -> CortexDecoder.CDCamera.CDCameraLens
+  @available(iOS 15.4, *)
+  public func getSupportedCameras() -> [CortexDecoder.CDCamera.CDCameraLens]
+  @available(iOS 15.4, *)
+  @objc public func getSupportedCamerasObjc() -> Swift.Array<Swift.Int>
+  @objc public func setDecodedImageRetrieval(enable: Swift.Bool)
+  @objc public func getDecodedImageRetrieval() -> Swift.Bool
+  @objc public func setHighlightBarcodes(enable: Swift.Bool, highlightColor: UIKit.UIColor = UIColor.green)
+  @objc public func getHighlightBarcodes() -> Swift.Bool
+  @objc public func getBarcodeHighlightColor() -> UIKit.UIColor
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDSymbology : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDSymbology
+  @objc public enum CDSymbologyType : Swift.Int {
+    case undefined
+    case goCode
+    case dataMatrix
+    case qrCode
+    case aztecCode
+    case maxiCode
+    case pdf417
+    case microPDF417
+    case code39
+    case interleaved2of5
+    case codabar
+    case code128
+    case code93
+    case upca
+    case upce
+    case ean13
+    case ean8
+    case gs1DatabarOmniTruncated
+    case databarOmniTruncatedCCA
+    case databarOmniTruncatedCCB
+    case databarOmniTruncatedCCC
+    case gs1DatabarStacked
+    case gs1DatabarLimited
+    case gs1DatabarExpanded
+    case gs1DatabarExpandedStacked
+    case hanxin
+    case qrCodeMicro
+    case qrCodeModel1
+    case qrConfigurationCode
+    case code11
+    case code32
+    case plessey
+    case msiPlessey
+    case telepen
+    case trioptic
+    case pharmacode
+    case matrix2of5
+    case straight2of5
+    case code49
+    case codablockF
+    case uspsPostnet
+    case uspsPlanet
+    case uspsIntelligentMail
+    case australiaPost
+    case dutchPost
+    case japanPost
+    case royalMail
+    case upuTag
+    case koreaPost
+    case hongkong2of5
+    case nec2of5
+    case iata2of5
+    case canadaPost
+    case databarStackedCCA
+    case databarStackedCCB
+    case databarStackedCCC
+    case databarLimitedCCA
+    case databarLimitedCCB
+    case databarLimitedCCC
+    case databarExpandedCCA
+    case databarExpandedCCB
+    case databarExpandedCCC
+    case databarExpandedStackedCCA
+    case databarExpandedStackedCCB
+    case databarExpandedStackedCCC
+    case bc412
+    case gridMatrix
+    case code128_CCA
+    case code128_CCB
+    case code128_CCC
+    case upca_CCA
+    case upca_CCB
+    case upca_CCC
+    case upce_CCA
+    case upce_CCB
+    case upce_CCC
+    case ean8_CCA
+    case ean8_CCB
+    case ean8_CCC
+    case ean13_CCA
+    case ean13_CCB
+    case ean13_CCC
+    case db14_CCA
+    case db14_CCB
+    case db14_CCC
+    case dotcode
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public class func getStringFromSymbologyType(symbologyType: CortexDecoder.CDSymbology.CDSymbologyType) -> Swift.String
+  @objc public func setSendAIMSymbID(enable: Swift.Bool)
+  @objc public func getSendAIMSymbID() -> Swift.Bool
+  @available(iOS, deprecated: 4.7.3, message: "API is no longer required. By default SDK handles UPC Family decoding better.")
+  @objc public func setReducedAggressiveness(enable: Swift.Bool)
+  @available(iOS, deprecated: 4.7.3, message: "API is no longer required. By default SDK handles UPC Family decoding better.")
+  @objc public func getReducedAggressiveness() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UspsPlanet : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UspsPlanet
+  @objc public func setUspsPlanet(enable: Swift.Bool)
+  @objc public func getUspsPlanet() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class RoyalMail : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.RoyalMail
+  @objc public func setRoyalMail(enable: Swift.Bool)
+  @objc public func getRoyalMail() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Code49 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Code49
+  @objc public func setCode49(enable: Swift.Bool)
+  @objc public func getCode49() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Interleaved2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Interleaved2Of5
+  @objc public enum Interleaved2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setInterleaved2Of5(enable: Swift.Bool)
+  @objc public func getInterleaved2Of5() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Interleaved2Of5.Interleaved2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.Interleaved2Of5.Interleaved2Of5Checksum
+  @objc public func setMinimumLength(length: Swift.Int)
+  @objc public func getMinimumLength() -> Swift.Int
+  @objc public func setRejectPartialDecode(enable: Swift.Bool)
+  @objc public func getRejectPartialDecode() -> Swift.Bool
+  @objc public func setQuietZone(enable: Swift.Bool)
+  @objc public func getQuietZone() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UPUTag : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UPUTag
+  @objc public func setUPUTag(enable: Swift.Bool)
+  @objc public func getUPUTag() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class JapanPost : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.JapanPost
+  @objc public func setJapanPost(enable: Swift.Bool)
+  @objc public func getJapanPost() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class QRCode : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.QRCode
+  @objc public enum QRCodePolarity : Swift.Int {
+    case either = 0
+    case darkOnLight = 1
+    case lightOnDark = -1
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setQR(enable: Swift.Bool)
+  @objc public func getQR() -> Swift.Bool
+  @objc public func setModel1(enable: Swift.Bool)
+  @objc public func getModel1() -> Swift.Bool
+  @objc public func setMirror(enable: Swift.Bool)
+  @objc public func getMirror() -> Swift.Bool
+  @objc public func setPolarity(polarity: CortexDecoder.QRCode.QRCodePolarity)
+  @objc public func getPolarity() -> CortexDecoder.QRCode.QRCodePolarity
+  @objc public func setMicroQR(enable: Swift.Bool)
+  @objc public func getMicroQR() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class Matrix2Of5 : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.Matrix2Of5
+  @objc public enum Matrix2Of5Checksum : Swift.Int {
+    case disable = 0
+    case enable = 1
+    case enableStripCheckCharacter = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setMatrix2Of5(enable: Swift.Bool)
+  @objc public func getMatrix2Of5() -> Swift.Bool
+  @objc public func setChecksum(checksum: CortexDecoder.Matrix2Of5.Matrix2Of5Checksum)
+  @objc public func getChecksum() -> CortexDecoder.Matrix2Of5.Matrix2Of5Checksum
+  @objc deinit
+}
+@objc public protocol CDExposureDelegate {
+  @objc func exposureData(compoundGain: Swift.Int)
+  @objc func initialCompoundGain(initial: Swift.Int)
+}
+@_hasMissingDesignatedInitializers @objc public class CDLicenseResult : ObjectiveC.NSObject {
+  @objc public var status: CortexDecoder.CDLicenseResult.CDLicenseStatus
+  @objc public var message: Swift.String
+  @objc public var expirationDate: Swift.String?
+  @objc public var rawExpirationDate: Foundation.Date?
+  @objc public enum CDLicenseStatus : Swift.Int {
+    case activated
+    case expired
+    case invalid
+    case networkIssue
+    case unknown
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc deinit
+}
+@objc public protocol CDMultiFrameDelegate {
+  @objc func decodeCount(numberOfDecodes: Swift.Int)
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class MaxiCode : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.MaxiCode
+  @objc public func setMaxiCode(enable: Swift.Bool)
+  @objc public func getMaxiCode() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UPCA : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UPCA
+  @objc public func setUPCA(enable: Swift.Bool)
+  @objc public func getUPCA() -> Swift.Bool
+  @objc public func setConvertToEAN13(enable: Swift.Bool)
+  @objc public func getConvertToEAN13() -> Swift.Bool
+  @objc public func setStripNumberSystemDigit(enable: Swift.Bool)
+  @objc public func getStripNumberSystemDigit() -> Swift.Bool
+  @objc public func setStripCheckDigit(enable: Swift.Bool)
+  @objc public func getStripCheckDigit() -> Swift.Bool
+  @objc public func setSupplement2Digit(enable: Swift.Bool)
+  @objc public func getSupplement2Digit() -> Swift.Bool
+  @objc public func setSupplement5Digit(enable: Swift.Bool)
+  @objc public func getSupplement5Digit() -> Swift.Bool
+  @objc public func setSupplementAddSpace(enable: Swift.Bool)
+  @objc public func getSupplementAddSpace() -> Swift.Bool
+  @objc public func setSupplementRequired(enable: Swift.Bool)
+  @objc public func getSupplementRequired() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDSled : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDSled
+  @objc weak public var sledEventsProtocol: (any CortexDecoder.CDSledEventDelegate)?
+  @objc public enum CDSledType : Swift.Int {
+    case none
+    case cr4300
+    case cr4300N
+    case cr7018
+    case cr7020
+    case cr4405
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public enum CDSledEvent : Swift.Int {
+    case connected = 0
+    case disconnected
+    case leftButtonPress
+    case rightButtonPress
+    case leftRightButtonPress
+    case buttonRelease
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func getSledAccessoryConnected() -> CortexDecoder.CDSled.CDSledType
+  @objc public func getSledAccessoryBatteryHealthStatus() -> Swift.String
+  @objc public func getSledAccessoryBatteryDeploymentDate() -> Swift.String
+  @objc public func getSledAccessoryBatterySerialNumber() -> Swift.String
+  @objc public func getSledAccessorySerialNumber() -> Swift.String
+  @objc public func getSledAccessoryFirmwareNumber() -> Swift.String
+  @objc public func getSledAccessoryHardwareNumber() -> Swift.String
+  @objc public func getSledAccessoryManufacturer() -> Swift.String
+  @objc public func createSledHardwareConnection()
+  @objc public func destroySledHardwareConnection()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class DataMatrix : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.DataMatrix
+  @objc public enum DataMatrixPolarity : Swift.Int {
+    case either = 0
+    case darkOnLight = 1
+    case lightOnDark = -1
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc public func setDataMatrix(enable: Swift.Bool)
+  @objc public func getDataMatrix() -> Swift.Bool
+  @objc public func setRectangular(enable: Swift.Bool)
+  @objc public func getRectangular() -> Swift.Bool
+  @objc public func setExtendedRectangular(enable: Swift.Bool)
+  @objc public func getExtendedRectangular() -> Swift.Bool
+  @objc public func setMirror(enable: Swift.Bool)
+  @objc public func getMirror() -> Swift.Bool
+  @objc public func setPolarity(polarity: CortexDecoder.DataMatrix.DataMatrixPolarity)
+  @objc public func getPolarity() -> CortexDecoder.DataMatrix.DataMatrixPolarity
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class UPCE : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.UPCE
+  @objc public func setUPCE(enable: Swift.Bool)
+  @objc public func getUPCE() -> Swift.Bool
+  @objc public func setStripNumberSystemDigit(enable: Swift.Bool)
+  @objc public func getStripNumberSystemDigit() -> Swift.Bool
+  @objc public func setStripCheckDigit(enable: Swift.Bool)
+  @objc public func getStripCheckDigit() -> Swift.Bool
+  @objc public func setSupplement2Digit(enable: Swift.Bool)
+  @objc public func getSupplement2Digit() -> Swift.Bool
+  @objc public func setSupplement5Digit(enable: Swift.Bool)
+  @objc public func getSupplement5Digit() -> Swift.Bool
+  @objc public func setSupplementAddSpace(enable: Swift.Bool)
+  @objc public func getSupplementAddSpace() -> Swift.Bool
+  @objc public func setSupplementRequired(enable: Swift.Bool)
+  @objc public func getSupplementRequired() -> Swift.Bool
+  @objc public func setExpansion(enable: Swift.Bool)
+  @objc public func getExpansion() -> Swift.Bool
+  @objc public func setNumberSystem1(enable: Swift.Bool)
+  @objc public func getNumberSystem1() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDDevice : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CDDevice
+  @objc public func setVibration(enable: Swift.Bool)
+  @objc public func getVibration() -> Swift.Bool
+  @objc public func setAudio(enable: Swift.Bool)
+  @objc public func getAudio() -> Swift.Bool
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class SoracoLicenseManager {
+  public static let shared: CortexDecoder.SoracoLicenseManager
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CDVerification : ObjectiveC.NSObject {
+  @objc public var gradeFinal: Swift.Int
+  @objc public var gradeReferenceDecode: Swift.Int
+  @objc public var gradeContrast: Swift.Int
+  @objc public var scoreContrast: Swift.Int
+  @objc public var gradeModulation: Swift.Int
+  @objc public var gradeReflectanceMargin: Swift.Int
+  @objc public var gradeFixedPatternDamage: Swift.Int
+  @objc public var gradeAxialNonuniformity: Swift.Int
+  @objc public var scoreAxialNonuniformity: Swift.Int
+  @objc public var gradeGridNonuniformity: Swift.Int
+  @objc public var scoreGridNonuniformity: Swift.Int
+  @objc public var gradeUnusedErrorCorrect: Swift.Int
+  @objc public var scoreUnusedErrorCorrect: Swift.Int
+  @objc public var apertureSizeUsed: Swift.Int
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CompositeCode : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CompositeCode
+  @objc public func setCompositeCode(enable: Swift.Bool)
+  @objc public func getCompositeCode() -> Swift.Bool
+  @objc public func setCompositeCodeA(enable: Swift.Bool)
+  @objc public func getCompositeCodeA() -> Swift.Bool
+  @objc public func setCompositeCodeB(enable: Swift.Bool)
+  @objc public func getCompositeCodeB() -> Swift.Bool
+  @objc public func setCompositeCodeC(enable: Swift.Bool)
+  @objc public func getCompositeCodeC() -> Swift.Bool
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class CodablockF : ObjectiveC.NSObject {
+  @objc public static let shared: CortexDecoder.CodablockF
+  @objc public func setCodablockF(enable: Swift.Bool)
+  @objc public func getCodablockF() -> Swift.Bool
+  @objc deinit
+}
+extension CortexDecoder.CDResult.CDDecodeStatus : Swift.Equatable {}
+extension CortexDecoder.CDResult.CDDecodeStatus : Swift.Hashable {}
+extension CortexDecoder.CDResult.CDDecodeStatus : Swift.RawRepresentable {}
+extension CortexDecoder.Aztec.AztecPolarity : Swift.Equatable {}
+extension CortexDecoder.Aztec.AztecPolarity : Swift.Hashable {}
+extension CortexDecoder.Aztec.AztecPolarity : Swift.RawRepresentable {}
+extension CortexDecoder.Code39.Code39Checksum : Swift.Equatable {}
+extension CortexDecoder.Code39.Code39Checksum : Swift.Hashable {}
+extension CortexDecoder.Code39.Code39Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.MSIPlessey.MSIPlesseyChecksum : Swift.Equatable {}
+extension CortexDecoder.MSIPlessey.MSIPlesseyChecksum : Swift.Hashable {}
+extension CortexDecoder.MSIPlessey.MSIPlesseyChecksum : Swift.RawRepresentable {}
+extension CortexDecoder.GridMatrix.GridMatrixPolarity : Swift.Equatable {}
+extension CortexDecoder.GridMatrix.GridMatrixPolarity : Swift.Hashable {}
+extension CortexDecoder.GridMatrix.GridMatrixPolarity : Swift.RawRepresentable {}
+extension CortexDecoder.CDDecoder.CDSecurityLevel : Swift.Equatable {}
+extension CortexDecoder.CDDecoder.CDSecurityLevel : Swift.Hashable {}
+extension CortexDecoder.CDDecoder.CDSecurityLevel : Swift.RawRepresentable {}
+extension CortexDecoder.CDDecoder.CDCustomMode : Swift.Equatable {}
+extension CortexDecoder.CDDecoder.CDCustomMode : Swift.Hashable {}
+extension CortexDecoder.CDDecoder.CDCustomMode : Swift.RawRepresentable {}
+extension CortexDecoder.CDDecoder.CDDecodeMode : Swift.Equatable {}
+extension CortexDecoder.CDDecoder.CDDecodeMode : Swift.Hashable {}
+extension CortexDecoder.CDDecoder.CDDecodeMode : Swift.RawRepresentable {}
+extension CortexDecoder.CDDecoder.CDImageSaving : Swift.Equatable {}
+extension CortexDecoder.CDDecoder.CDImageSaving : Swift.Hashable {}
+extension CortexDecoder.CDDecoder.CDImageSaving : Swift.RawRepresentable {}
+extension CortexDecoder.CDDecoder.CDPreprocessType : Swift.Equatable {}
+extension CortexDecoder.CDDecoder.CDPreprocessType : Swift.Hashable {}
+extension CortexDecoder.CDDecoder.CDPreprocessType : Swift.RawRepresentable {}
+extension CortexDecoder.Codabar.CodabarChecksum : Swift.Equatable {}
+extension CortexDecoder.Codabar.CodabarChecksum : Swift.Hashable {}
+extension CortexDecoder.Codabar.CodabarChecksum : Swift.RawRepresentable {}
+extension CortexDecoder.Dotcode.DotcodePolarity : Swift.Equatable {}
+extension CortexDecoder.Dotcode.DotcodePolarity : Swift.Hashable {}
+extension CortexDecoder.Dotcode.DotcodePolarity : Swift.RawRepresentable {}
+extension CortexDecoder.IATA2Of5.IATA2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.IATA2Of5.IATA2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.IATA2Of5.IATA2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.Code11.Code11Checksum : Swift.Equatable {}
+extension CortexDecoder.Code11.Code11Checksum : Swift.Hashable {}
+extension CortexDecoder.Code11.Code11Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.HongKong2Of5.HongKong2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.HongKong2Of5.HongKong2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.HongKong2Of5.HongKong2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.CDPerformanceFeatures.CDPerformanceType : Swift.Equatable {}
+extension CortexDecoder.CDPerformanceFeatures.CDPerformanceType : Swift.Hashable {}
+extension CortexDecoder.CDPerformanceFeatures.CDPerformanceType : Swift.RawRepresentable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDataParsing : Swift.Equatable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDataParsing : Swift.Hashable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDataParsing : Swift.RawRepresentable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDPM : Swift.Equatable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDPM : Swift.Hashable {}
+extension CortexDecoder.CDPerformanceFeatures.CDDPM : Swift.RawRepresentable {}
+extension CortexDecoder.CDPerformanceFeatures.CDVerifier : Swift.Equatable {}
+extension CortexDecoder.CDPerformanceFeatures.CDVerifier : Swift.Hashable {}
+extension CortexDecoder.CDPerformanceFeatures.CDVerifier : Swift.RawRepresentable {}
+extension CortexDecoder.NEC2Of5.NEC2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.NEC2Of5.NEC2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.NEC2Of5.NEC2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.Straight2Of5.Straight2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.Straight2Of5.Straight2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.Straight2Of5.Straight2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDPosition : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDPosition : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDPosition : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDResolution : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDResolution : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDResolution : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDFocus : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDFocus : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDFocus : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDTorch : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDTorch : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDTorch : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDAGCMode : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDAGCMode : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDAGCMode : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDExposureTime : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDExposureTime : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDExposureTime : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDISO : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDISO : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDISO : Swift.RawRepresentable {}
+extension CortexDecoder.CDCamera.CDCameraLens : Swift.Equatable {}
+extension CortexDecoder.CDCamera.CDCameraLens : Swift.Hashable {}
+extension CortexDecoder.CDCamera.CDCameraLens : Swift.RawRepresentable {}
+extension CortexDecoder.CDSymbology.CDSymbologyType : Swift.Equatable {}
+extension CortexDecoder.CDSymbology.CDSymbologyType : Swift.Hashable {}
+extension CortexDecoder.CDSymbology.CDSymbologyType : Swift.RawRepresentable {}
+extension CortexDecoder.Interleaved2Of5.Interleaved2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.Interleaved2Of5.Interleaved2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.Interleaved2Of5.Interleaved2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.QRCode.QRCodePolarity : Swift.Equatable {}
+extension CortexDecoder.QRCode.QRCodePolarity : Swift.Hashable {}
+extension CortexDecoder.QRCode.QRCodePolarity : Swift.RawRepresentable {}
+extension CortexDecoder.Matrix2Of5.Matrix2Of5Checksum : Swift.Equatable {}
+extension CortexDecoder.Matrix2Of5.Matrix2Of5Checksum : Swift.Hashable {}
+extension CortexDecoder.Matrix2Of5.Matrix2Of5Checksum : Swift.RawRepresentable {}
+extension CortexDecoder.CDLicenseResult.CDLicenseStatus : Swift.Equatable {}
+extension CortexDecoder.CDLicenseResult.CDLicenseStatus : Swift.Hashable {}
+extension CortexDecoder.CDLicenseResult.CDLicenseStatus : Swift.RawRepresentable {}
+extension CortexDecoder.CDSled.CDSledType : Swift.Equatable {}
+extension CortexDecoder.CDSled.CDSledType : Swift.Hashable {}
+extension CortexDecoder.CDSled.CDSledType : Swift.RawRepresentable {}
+extension CortexDecoder.CDSled.CDSledEvent : Swift.Equatable {}
+extension CortexDecoder.CDSled.CDSledEvent : Swift.Hashable {}
+extension CortexDecoder.CDSled.CDSledEvent : Swift.RawRepresentable {}
+extension CortexDecoder.DataMatrix.DataMatrixPolarity : Swift.Equatable {}
+extension CortexDecoder.DataMatrix.DataMatrixPolarity : Swift.Hashable {}
+extension CortexDecoder.DataMatrix.DataMatrixPolarity : Swift.RawRepresentable {}

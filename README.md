@@ -1,9 +1,73 @@
 # Cordova Plugin CortexDecoder
-================================
 
 Follows the [Cordova Plugin spec](https://cordova.apache.org/docs/en/latest/plugin_ref/spec.html), so that it works with [Plugman](https://github.com/apache/cordova-plugman).
 
-## Licence ##
+## About
+
+**Android:** CortexDecoder SDK v4.9.0 - 16KB page size aligned for Android compatibility.
+**iOS:** CortexDecoder SDK v4.14.0
+
+Supports both Android and iOS platforms with a unified JavaScript interface.
+
+## Usage
+
+### Basic Scan
+
+```javascript
+cordova.plugins.cortexDecoder.scan(options, successCallback, errorCallback);
+```
+
+### Options
+
+- `customerID` (string): Your CortexDecoder customer ID
+- `licenseKey` (string): Your CortexDecoder license key
+- `cameraNumber` (integer): Camera index (0, 1, 2, etc.) - takes precedence over `cameraPosition`
+- `cameraPosition` (string): "front" or "back" - legacy option
+- `encodingCharsetName` (string): Character encoding (default: "ISO-8859-1")
+- `decoderTimeLimit` (integer): Decoder time limit in milliseconds
+- `numberOfBarcodesToDecode` (integer): Number of barcodes to decode (default: 1)
+- `exactlyNBarcodes` (boolean): Decode exactly N barcodes
+- `beepOnScanEnabled` (boolean): Enable beep on scan (default: true)
+- `scanMultiple` (boolean): Enable multiple barcode scanning
+- `dpmEnabled` (boolean): Enable DPM (Direct Part Marking) mode
+- `inputBuffering` (boolean): Enable input buffering
+- `inputBufferingItemCount` (integer): Number of items to buffer
+
+### Camera Selection
+
+The `cameraNumber` option allows you to specify any camera by its index:
+- 0: Usually the back camera
+- 1: Usually the front camera
+- 2+: Additional cameras (e.g., ultra-wide, telephoto) on supported devices
+
+If `cameraNumber` is specified, it takes precedence over `cameraPosition`.
+
+### Example
+
+```javascript
+var options = {
+  customerID: "YOUR_CUSTOMER_ID",
+  licenseKey: "YOUR_LICENSE_KEY",
+  cameraNumber: 2, // Use the 3rd camera (ultra-wide on some devices)
+  numberOfBarcodesToDecode: 1,
+  beepOnScanEnabled: true
+};
+
+cordova.plugins.cortexDecoder.scan(options,
+  function(results) {
+    // results is an array of barcode objects
+    results.forEach(function(barcode) {
+      console.log("Data:", barcode.barcodeData);
+      console.log("Type:", barcode.symbologyName);
+    });
+  },
+  function(error) {
+    console.error("Scan failed:", error);
+  }
+);
+```
+
+## Licence
 
 The MIT License
 

@@ -1,11 +1,12 @@
 {
   "name": "cordova-plugin-cortexdecoder",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "You can use the CortexDecoder plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.",
   "cordova": {
     "id": "cordova-plugin-cortexdecoder",
     "platforms": [
       "android",
+      "ios",
       "browser"
     ]
   },
@@ -16,6 +17,7 @@
   "keywords": [
     "ecosystem:cordova",
     "cordova-android",
+    "cordova-ios",
     "cordova-browser",
     "cordova:plugin"
   ],

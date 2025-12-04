@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:rim="http://www.blackberry.com/ns/widgets" id="cordova-plugin-cortexdecoder" version="1.0.0">
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:rim="http://www.blackberry.com/ns/widgets" id="cordova-plugin-cortexdecoder" version="2.0.0">
   <name>CortexDecoder</name>
-  <description>You can use the CortexDecoder plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.</description>
+  <description>You can use the CortexDecoder plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application. SDK v4.9.0 with 16KB page alignment.</description>
   <license>MIT</license>
   <repo>https://github.com/nfcf/cordova-plugin-cortexdecoder</repo>
   <issue>https://github.com/nfcf/cordova-plugin-cortexdecoder/issues</issue>
@@ -40,6 +40,25 @@
     </config-file>
     <framework src="src/android/cortexdecoder.gradle" custom="true" type="gradleReference"/>
     <lib-file src="src/android/CortexDecoderLibrary.aar"/>
+  </platform>
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="CortexDecoder">
+        <param name="ios-package" value="CortexDecoder"/>
+      </feature>
+    </config-file>
+
+    <preference name="SWIFT_VERSION" default="5.0"/>
+
+    <source-file src="src/ios/CortexDecoder.swift"/>
+    <source-file src="src/ios/CortexScannerViewController.swift"/>
+
+    <framework src="src/ios/CortexDecoder.xcframework" custom="true" embed="true"/>
+
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+      <string>Camera permission is required to scan barcodes.</string>
+    </config-file>
   </platform>
 
   <platform name="browser">

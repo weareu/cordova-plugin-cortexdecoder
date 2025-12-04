@@ -1,0 +1,6 @@
+framework module CortexDecoder [extern_c]{
+    umbrella header "CortexDecoder.h"
+    export *
+    module * {export *}
+}
+module CortexDecoder.Swift { header "CortexDecoder-Swift.h" }
