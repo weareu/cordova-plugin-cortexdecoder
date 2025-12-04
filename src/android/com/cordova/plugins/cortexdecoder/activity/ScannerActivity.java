@@ -107,8 +107,8 @@ public class ScannerActivity extends Activity {
     CDLicense.shared.setCustomerID(customerID);
     CDLicense.shared.activateLicense(licenseKey, new CDLicenseResultListener() {
       @Override
-      public void onLicenseResult(CDLicenseResult result) {
-        Log.d(TAG, "onLicenseResult:" + result.status);
+      public void onActivationResult(CDLicenseResult result) {
+        Log.d(TAG, "onActivationResult:" + result.status);
         if (result.status == CDLicenseResult.CDLicenseStatus.activated) {
           runOnUiThread(() -> {
             configureScanSettings(
@@ -165,11 +165,11 @@ public class ScannerActivity extends Activity {
     if (intent.hasExtra("cameraNumber")) {
       int cameraNumber = intent.getIntExtra("cameraNumber", 0);
       try {
-        // Get connected cameras
-        List<Integer> cameras = CDCamera.shared.getConnectedCameras();
+        // Get connected cameras (returns List<String> of camera IDs)
+        List<String> cameras = CDCamera.shared.getConnectedCameras();
         if (cameras != null && cameraNumber < cameras.size()) {
           CDCamera.shared.setCamera(cameras.get(cameraNumber));
-          Log.d(TAG, "Set camera to index: " + cameraNumber);
+          Log.d(TAG, "Set camera to index: " + cameraNumber + " (ID: " + cameras.get(cameraNumber) + ")");
         }
       } catch (Exception e) {
         Log.e(TAG, "Failed to set camera number " + cameraNumber + ": " + e.getMessage());
@@ -356,8 +356,8 @@ public class ScannerActivity extends Activity {
         // Start camera with decode listener
         CDCamera.shared.startCamera(new CDCameraDecodeListener() {
           @Override
-          public void onCameraDecode(CDResult[] results) {
-            onDecode(results);
+          public void onDecode(CDResult[] results) {
+            ScannerActivity.this.onDecode(results);
           }
         });
 
