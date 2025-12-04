@@ -35,11 +35,9 @@ class CortexScannerViewController: UIViewController {
         // Parse options
         let customerID = options["customerID"] as? String ?? ""
         let licenseKey = options["licenseKey"] as? String ?? ""
-        let encoding = options["encodingCharsetName"] as? String ?? "ISO-8859-1"
         let decoderTimeLimit = options["decoderTimeLimit"] as? Int ?? 0
         let numberOfBarcodesToDecode = options["numberOfBarcodesToDecode"] as? Int ?? 1
         let exactlyNBarcodes = options["exactlyNBarcodes"] as? Bool ?? false
-        let beepOnScanEnabled = options["beepOnScanEnabled"] as? Bool ?? true
 
         scanMultiple = options["scanMultiple"] as? Bool ?? false
         inputBuffering = options["inputBuffering"] as? Bool ?? false
@@ -51,11 +49,9 @@ class CortexScannerViewController: UIViewController {
         license.activateLicense(key: licenseKey) { [weak self] result in
             if result.status == .activated {
                 self?.configureScanSettings(
-                    encoding: encoding,
                     decoderTimeLimit: decoderTimeLimit,
                     numberOfBarcodesToDecode: numberOfBarcodesToDecode,
-                    exactlyNBarcodes: exactlyNBarcodes,
-                    beepOnScanEnabled: beepOnScanEnabled
+                    exactlyNBarcodes: exactlyNBarcodes
                 )
             } else {
                 self?.errorCallback?("License activation failed")
@@ -88,13 +84,12 @@ class CortexScannerViewController: UIViewController {
         errorCallback?("User cancelled scan")
     }
 
-    private func configureScanSettings(encoding: String, decoderTimeLimit: Int, numberOfBarcodesToDecode: Int, exactlyNBarcodes: Bool, beepOnScanEnabled: Bool) {
+    private func configureScanSettings(decoderTimeLimit: Int, numberOfBarcodesToDecode: Int, exactlyNBarcodes: Bool) {
         // Configure decoder
-        decoderModule.setPreprocessType(preprocessType: .lowPass2)
-        decoderModule.setPreprocessType(preprocessType: .deblur1dMethod1)
+        decoderModule.setPreprocessType(setting: .lowPass2)
+        decoderModule.setPreprocessType(setting: .deblur1dMethod1)
         decoderModule.setTimeLimit(timeLimit: decoderTimeLimit)
-        decoderModule.setBarcodesToDecode(numberOfCodes: numberOfBarcodesToDecode, exactMatch: exactlyNBarcodes)
-        decoderModule.setEncodingCharsetName(encoding: encoding)
+        decoderModule.setBarcodesToDecode(number: numberOfBarcodesToDecode, decodeExactly: exactlyNBarcodes)
 
         if scanMultiple {
             decoderModule.setMultiFrameDecoding(enable: true)
@@ -102,12 +97,27 @@ class CortexScannerViewController: UIViewController {
 
         // Configure camera
         cameraModule.setTorch(torch: .off)
-        decoderModule.setHighlightBarcodes(enable: true)
+        cameraModule.setHighlightBarcodes(enable: true)
 
         // Handle camera selection
         if let cameraNumber = options["cameraNumber"] as? Int {
             // Use camera number if specified
-            cameraModule.setCamera(cameraId: cameraNumber)
+            switch cameraNumber {
+            case 0:
+                // Back camera with wide angle
+                cameraModule.setCameraPosition(position: .back)
+                cameraModule.setCamera(type: .wideAngle)
+            case 1:
+                // Front camera
+                cameraModule.setCameraPosition(position: .front)
+            case 2:
+                // Ultra-wide camera
+                cameraModule.setCameraPosition(position: .back)
+                cameraModule.setCamera(type: .ultraWide)
+            default:
+                // Default to back camera
+                cameraModule.setCameraPosition(position: .back)
+            }
         } else if let cameraPosition = options["cameraPosition"] as? String {
             // Fall back to camera position
             if cameraPosition.lowercased() == "front" {
@@ -142,7 +152,7 @@ class CortexScannerViewController: UIViewController {
 
     private func stopPreview() {
         decoderModule.setDecoding(enable: false)
-        decoderModule.setHighlightBarcodes(enable: false)
+        cameraModule.setHighlightBarcodes(enable: false)
         cameraModule.setVideoCapturing(value: false)
         cameraModule.stopPreview()
     }
@@ -198,7 +208,7 @@ extension CortexScannerViewController: CDDecodeResultDelegate {
         for cdResult in decodeResult {
             guard cdResult.status == .success else { continue }
 
-            let data = cdResult.barcodeData ?? ""
+            let data = cdResult.barcodeData
             guard !resultsMap.keys.contains(data) else { continue }
 
             lastResultTime = now
@@ -206,13 +216,8 @@ extension CortexScannerViewController: CDDecodeResultDelegate {
             var result: [String: Any] = [
                 "barcodeData": data,
                 "barcodeDataHEX": byteArrayToHexString(data: data),
-                "symbologyName": cdResult.symbology ?? ""
+                "symbologyName": cdResult.symbology
             ]
-
-            // Add preview coordinates if available
-            if let coords = cdResult.previewCoordinates {
-                result["corners"] = coords.corners
-            }
 
             resultsMap[data] = result
         }
