@@ -162,14 +162,34 @@ public class ScannerActivity extends Activity {
     }
 
     // Handle camera selection
+    // cameraNumber: 0 = back/wide, 1 = front, 2 = ultra-wide (if available)
     if (intent.hasExtra("cameraNumber")) {
       int cameraNumber = intent.getIntExtra("cameraNumber", 0);
       try {
-        // Get connected cameras (returns List<String> of camera IDs)
-        List<String> cameras = CDCamera.shared.getConnectedCameras();
-        if (cameras != null && cameraNumber < cameras.size()) {
-          CDCamera.shared.setCamera(cameras.get(cameraNumber));
-          Log.d(TAG, "Set camera to index: " + cameraNumber + " (ID: " + cameras.get(cameraNumber) + ")");
+        switch (cameraNumber) {
+          case 0:
+            // Back camera with wide angle (default)
+            CDCamera.shared.setCameraPosition(CDCamera.CDPosition.back);
+            CDCamera.shared.setCamera(CDCamera.CDCameraLens.wideAngle);
+            Log.d(TAG, "Set camera to back/wideAngle");
+            break;
+          case 1:
+            // Front camera
+            CDCamera.shared.setCameraPosition(CDCamera.CDPosition.front);
+            Log.d(TAG, "Set camera to front");
+            break;
+          case 2:
+            // Ultra-wide camera (requires Camera2 API)
+            CDCamera.shared.setCameraAPI(CDCamera.CDCameraAPI.camera2);
+            CDCamera.shared.setCameraPosition(CDCamera.CDPosition.back);
+            CDCamera.shared.setCamera(CDCamera.CDCameraLens.ultraWide);
+            Log.d(TAG, "Set camera to back/ultraWide");
+            break;
+          default:
+            // Default to back camera
+            CDCamera.shared.setCameraPosition(CDCamera.CDPosition.back);
+            Log.d(TAG, "Set camera to default (back)");
+            break;
         }
       } catch (Exception e) {
         Log.e(TAG, "Failed to set camera number " + cameraNumber + ": " + e.getMessage());
