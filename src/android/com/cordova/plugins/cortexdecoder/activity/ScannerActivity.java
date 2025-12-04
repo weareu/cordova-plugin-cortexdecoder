@@ -23,7 +23,11 @@ import android.widget.Toast;
 import com.codecorp.CDCamera;
 import com.codecorp.CDDecoder;
 import com.codecorp.CDLicense;
+import com.codecorp.CDLicenseResult;
 import com.codecorp.CDResult;
+import com.codecorp.listeners.CDCameraDecodeListener;
+import com.codecorp.listeners.CDLicenseResultListener;
+import com.codecorp.listeners.CDMultiFrameDecodeCountListener;
 import com.cordova.plugins.cortexdecoder.view.BarcodeFinderView;
 
 import org.json.JSONArray;
@@ -76,32 +80,12 @@ public class ScannerActivity extends Activity {
 
     setContentView(scanner_activity);
 
-    mCameraPreview = CDCamera.shared.startPreview();
     mCameraFrame = findViewById(resources.getIdentifier("cortex_scanner_view", "id", package_name));
-
-    if (mCameraPreview.getParent() != null) ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
-    mCameraFrame.addView(mCameraPreview, 0);
 
     mMainHandler = new Handler(Looper.getMainLooper());
 
     mDisplayMetrics = new DisplayMetrics();
     getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-
-    CDLicense.shared.setLicenseResultListener((statusCode) -> {
-      Log.d(TAG, "onActivationResult:" + statusCode);
-      switch (statusCode) {
-        case licenseValid:
-          // Toast.makeText(getApplicationContext(), "License Valid", Toast.LENGTH_SHORT).show();
-          break;
-        case licenseExpired:
-          Date date = CDLicense.shared.getExpirationDate();
-          Toast.makeText(getApplicationContext(), "License Expired: "+formatExpireDate(date), Toast.LENGTH_LONG).show();
-          break;
-        default:
-          Toast.makeText(getApplicationContext(), "License Invalid", Toast.LENGTH_SHORT).show();
-          break;
-      }
-    });
 
     Intent intent = getIntent();
     mInputBuffering = intent.getBooleanExtra("inputBuffering", false);
@@ -119,9 +103,39 @@ public class ScannerActivity extends Activity {
 
     mScanMultiple = intent.getBooleanExtra("scanMultiple", false);
 
+    // Activate license
     CDLicense.shared.setCustomerID(customerID);
-    CDLicense.shared.activateLicense(licenseKey);
+    CDLicense.shared.activateLicense(licenseKey, new CDLicenseResultListener() {
+      @Override
+      public void onLicenseResult(CDLicenseResult result) {
+        Log.d(TAG, "onLicenseResult:" + result.status);
+        if (result.status == CDLicenseResult.CDLicenseStatus.activated) {
+          runOnUiThread(() -> {
+            configureScanSettings(
+              encoding,
+              decoderTimeLimit,
+              numberOfBarcodesToDecode,
+              exactlyNBarcodes,
+              intent
+            );
+          });
+        } else {
+          runOnUiThread(() -> {
+            Toast.makeText(getApplicationContext(), "License activation failed", Toast.LENGTH_SHORT).show();
+            finish();
+          });
+        }
+      }
+    });
 
+    // Tablets more than likely are going to have a screen dp >= 600
+    if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
+      // Lock phone form factor to portrait.
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+  }
+
+  private void configureScanSettings(String encoding, int decoderTimeLimit, int numberOfBarcodesToDecode, boolean exactlyNBarcodes, Intent intent) {
     CDDecoder.shared.setPreprocessType(CDDecoder.CDPreProcessType.lowPass2);
     CDDecoder.shared.setPreprocessType(CDDecoder.CDPreProcessType.deblur1dMethod1);
 
@@ -131,8 +145,14 @@ public class ScannerActivity extends Activity {
     CDCamera.CDTorch torchMode = sTorchState ? CDCamera.CDTorch.on : CDCamera.CDTorch.off;
     CDCamera.shared.setTorch(torchMode);
 
-    if(mScanMultiple)
-      CDDecoder.shared.setMultiFrameDecoding(true);
+    if(mScanMultiple) {
+      CDDecoder.shared.setMultiFrameDecoding(true, new CDMultiFrameDecodeCountListener() {
+        @Override
+        public void onMultiFrameDecodeCount(int count) {
+          // Handle multi-frame decode count if needed
+        }
+      });
+    }
 
     if(encoding != null && !encoding.isEmpty()) {
       CDDecoder.shared.setEncodingCharsetName(encoding);
@@ -141,23 +161,16 @@ public class ScannerActivity extends Activity {
       CDDecoder.shared.setEncodingCharsetName(DEFAULT_ENCODING);
     }
 
-    // Enable beep
-    if (beepOnScanEnabled) {
-      // Beep is enabled by default in v4.0+
-    }
-
-    // DPM support
-    boolean dpmEnabled = intent.getBooleanExtra("dpmEnabled", false);
-    if(dpmEnabled) {
-      // DPM configurations would go here if needed
-    }
-
-    // Handle cameraNumber parameter - takes precedence over cameraPosition
+    // Handle camera selection
     if (intent.hasExtra("cameraNumber")) {
       int cameraNumber = intent.getIntExtra("cameraNumber", 0);
       try {
-        CDCamera.shared.setCamera(cameraNumber);
-        Log.d(TAG, "Set camera to number: " + cameraNumber);
+        // Get connected cameras
+        List<Integer> cameras = CDCamera.shared.getConnectedCameras();
+        if (cameras != null && cameraNumber < cameras.size()) {
+          CDCamera.shared.setCamera(cameras.get(cameraNumber));
+          Log.d(TAG, "Set camera to index: " + cameraNumber);
+        }
       } catch (Exception e) {
         Log.e(TAG, "Failed to set camera number " + cameraNumber + ": " + e.getMessage());
       }
@@ -177,11 +190,8 @@ public class ScannerActivity extends Activity {
       }
     }
 
-    // Tablets more than likely are going to have a screen dp >= 600
-    if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
-      // Lock phone form factor to portrait.
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
+    // Start scanning
+    startScanning();
   }
 
   @Override
@@ -196,16 +206,6 @@ public class ScannerActivity extends Activity {
     super.onResume();
 
     removeLocatorOverlays();
-
-    startScanningAndDecoding();
-  }
-
-  private void startScanningAndDecoding() {
-    if (CDLicense.shared.isActivated()) {
-      if (!CDLicense.shared.isExpired()) {
-        startScanning();
-      }
-    }
   }
 
   private void removeLocatorOverlays() {
@@ -272,11 +272,11 @@ public class ScannerActivity extends Activity {
     }
 
     for (CDResult cdResult : cdResults) {
-      if (cdResult.getStatus() != CDResult.CDDecodeStatus.success) {
+      if (cdResult.status != CDResult.CDDecodeStatus.success) {
         continue;
       }
 
-      String data = cdResult.getBarcodeData();
+      String data = cdResult.barcodeData;
       if (!mResultsMap.containsKey(data)) mLastResultTick = now;
 
       JSONObject result = new JSONObject();
@@ -290,12 +290,18 @@ public class ScannerActivity extends Activity {
 
         result.put("barcodeData", data);
         result.put("barcodeDataHEX", byteArrayToHexString(dataBytes));
-        result.put("symbologyName", cdResult.getSymbology());
+        result.put("symbologyName", cdResult.symbology);
 
         // Get preview coordinates if available
-        if (cdResult.getPreviewCoordinates() != null) {
-          int[] coords = cdResult.getPreviewCoordinates().getCorners();
-          result.put("corners", coords);
+        if (cdResult.previewCoordinates != null && cdResult.previewCoordinates.size() > 0) {
+          JSONArray coordsArray = new JSONArray();
+          for (int i = 0; i < cdResult.previewCoordinates.size(); i++) {
+            JSONObject coordObj = new JSONObject();
+            coordObj.put("x", cdResult.previewCoordinates.get(i).x);
+            coordObj.put("y", cdResult.previewCoordinates.get(i).y);
+            coordsArray.put(coordObj);
+          }
+          result.put("corners", coordsArray);
         }
       } catch (JSONException e) {
         Log.d(TAG, "Error creating result JSON: " + e.getMessage());
@@ -346,7 +352,21 @@ public class ScannerActivity extends Activity {
         CDCamera.shared.setHighLightBarcodes(true);
         CDDecoder.shared.setDecoding(true);
         CDCamera.shared.setVideoCapturing(true);
-        CDCamera.shared.startCamera(ScannerActivity.this::onDecode);
+
+        // Start camera with decode listener
+        CDCamera.shared.startCamera(new CDCameraDecodeListener() {
+          @Override
+          public void onCameraDecode(CDResult[] results) {
+            onDecode(results);
+          }
+        });
+
+        // Start preview and add to layout
+        mCameraPreview = CDCamera.shared.startPreview();
+        if (mCameraPreview.getParent() != null) {
+          ((RelativeLayout) mCameraPreview.getParent()).removeView(mCameraPreview);
+        }
+        mCameraFrame.addView(mCameraPreview, 0);
       }
     });
   }
