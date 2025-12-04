@@ -106,14 +106,18 @@ class CortexScannerViewController: UIViewController {
             case 0:
                 // Back camera with wide angle
                 cameraModule.setCameraPosition(position: .back)
-                cameraModule.setCamera(type: .wideAngle)
+                if #available(iOS 15.4, *) {
+                    cameraModule.setCamera(type: .wideAngle)
+                }
             case 1:
                 // Front camera
                 cameraModule.setCameraPosition(position: .front)
             case 2:
                 // Ultra-wide camera
                 cameraModule.setCameraPosition(position: .back)
-                cameraModule.setCamera(type: .ultraWide)
+                if #available(iOS 15.4, *) {
+                    cameraModule.setCamera(type: .ultraWide)
+                }
             default:
                 // Default to back camera
                 cameraModule.setCameraPosition(position: .back)
